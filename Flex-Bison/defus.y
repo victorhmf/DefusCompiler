@@ -8,9 +8,9 @@
 %token END
 %token STRING
 %token VARIABLE
-%token DIGIT
-%token INT FLOAT
-%token COLON
+%token INTEGER
+%token INT FLOAT CHAR DOUBLE
+%token COLON LEFT_BRACKET RIGHT_BRACKET
 %start Input
 
 %%
@@ -22,13 +22,17 @@ Input:
 	
 Line:
 	END
-	| Declaration COLON
+	| Declaration
 	;
 
 Declaration:
-	INT STRING {printf ("Declaração de variável encontrada!\n"); }
-	| FLOAT STRING {printf ("Declaração de variável encontrada!\n"); }	
-;	
+	  INT STRING COLON {printf ("Declaração de variável encontrada!\n"); } 
+	| FLOAT STRING COLON {printf ("Declaração de variável encontrada!\n"); }
+	| DOUBLE STRING COLON {printf ("Declaração de variável encontrada!\n"); }
+	| CHAR STRING COLON {printf ("Declaração de variável encontrada!\n"); }
+	| CHAR STRING LEFT_BRACKET INTEGER RIGHT_BRACKET COLON {printf ("Declaração de variável encontrada!\n"); }
+
+	;	
 
 %%
 
