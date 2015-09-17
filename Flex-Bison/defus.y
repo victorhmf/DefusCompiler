@@ -5,17 +5,14 @@
 #include <math.h>
 %}
 
-%token END COLON
+%token END COLON COMA
 %token IDENTIFIER
 %token INTEGER
 %token INT FLOAT CHAR DOUBLE
 %token REAL
-%token PLUS MINUS TIMES DIVIDE POWER SQRT
+%token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 
-%left PLUS MINUS
-%left TIMES DIVIDE
-%right POWER
 
 %start Input
 
@@ -29,7 +26,7 @@ Input:
 Line:
 	END
 	| Declaration COLON { printf ("Declaração de variável encontrada!\n"); }
-	| Expression
+	| Expression COLON { printf ("Expressão encontrada!\n"); }
 	;
 
 Declaration:
@@ -49,8 +46,10 @@ Declaration:
 	|	Expression MINUS Expression
 	|	Expression DIVIDE Expression
 	|	Expression TIMES Expression
-	|	Expression POWER Expression
+	| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS
+	| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
 	|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
+	| MINUS Expression %prec NEG
 	;
 
 %%

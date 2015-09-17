@@ -19,6 +19,7 @@ real {integer}("."{integer})?
 "double" {return (DOUBLE);}
 
 ";" {return (COLON) ; }
+"," {return (COMA) ;}
 "\n" {return (END) ;}
 "[" {return (LEFT_BRACKET) ;}
 "]" {return (RIGHT_BRACKET) ;}
@@ -29,7 +30,7 @@ real {integer}("."{integer})?
 "-" return(MINUS);
 "*" return(TIMES);
 "/" return(DIVIDE);
-"^" return(POWER);
+"pow" return(POW);
 "sqrt" return(SQRT);
 
 
