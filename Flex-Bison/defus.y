@@ -5,12 +5,18 @@
 #include <math.h>
 %}
 
-%token END
-%token STRING
-%token VARIABLE
+%token END COLON
+%token IDENTIFIER
 %token INTEGER
 %token INT FLOAT CHAR DOUBLE
-%token COLON LEFT_BRACKET RIGHT_BRACKET
+%token REAL
+%token PLUS MINUS TIMES DIVIDE POWER SQRT
+%token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
+
+%left PLUS MINUS
+%left TIMES DIVIDE
+%right POWER
+
 %start Input
 
 %%
@@ -22,23 +28,37 @@ Input:
 	
 Line:
 	END
-	| Declaration
+	| Declaration COLON { printf ("Declaração de variável encontrada!\n"); }
+	| Expression
 	;
 
 Declaration:
-	  INT STRING COLON {printf ("Declaração de variável encontrada!\n"); } 
-	| FLOAT STRING COLON {printf ("Declaração de variável encontrada!\n"); }
-	| DOUBLE STRING COLON {printf ("Declaração de variável encontrada!\n"); }
-	| CHAR STRING COLON {printf ("Declaração de variável encontrada!\n"); }
-	| CHAR STRING LEFT_BRACKET INTEGER RIGHT_BRACKET COLON {printf ("Declaração de variável encontrada!\n"); }
+	  INT IDENTIFIER   
+	| FLOAT IDENTIFIER  
+	| DOUBLE IDENTIFIER  
+	| CHAR IDENTIFIER  
+	| CHAR IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET 
 
 	;	
+
+	Expression:
+	REAL
+	| INTEGER
+	|	IDENTIFIER
+	|	Expression PLUS Expression
+	|	Expression MINUS Expression
+	|	Expression DIVIDE Expression
+	|	Expression TIMES Expression
+	|	Expression POWER Expression
+	|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
+	;
 
 %%
 
 int yyerror(char *s) {
-   printf("%s\n",s);
+	 printf("%s\n",s);
 }
+
 
 int main(void) {
    yyparse();

@@ -9,22 +9,34 @@ white [ \t\r]+
 digit [0-9]
 integer {digit}+
 string  [a-z][a-z0-9]*
+real {integer}("."{integer})?
 
 %%
 
+"int" {return (INT) ;}
+"float" {return (FLOAT) ;} 
+"char" {return (CHAR) ; }
+"double" {return (DOUBLE);}
+
+";" {return (COLON) ; }
+"\n" {return (END) ;}
+"[" {return (LEFT_BRACKET) ;}
+"]" {return (RIGHT_BRACKET) ;}
+"(" return(LEFT_PARENTHESIS);
+")" return(RIGHT_PARENTHESIS);
+
+"+" return(PLUS);
+"-" return(MINUS);
+"*" return(TIMES);
+"/" return(DIVIDE);
+"^" return(POWER);
+"sqrt" return(SQRT);
+
+
 {white} { /* We ignore white characters */ }
-
-"int" {return INT ;}
-"float" {return FLOAT ;} 
-"char" {return CHAR ; }
-"double" {return DOUBLE;}
-";" {return COLON ; }
-"\n" {return END ;}
-"[" {return LEFT_BRACKET ;}
-"]" {return RIGHT_BRACKET ;}
-
-{string} {return STRING ;}
+{string} {return IDENTIFIER ;}
 {integer} {return INTEGER ;}
+{real} {yylval = atof(yytext); return(REAL); }
 
 %%
 
