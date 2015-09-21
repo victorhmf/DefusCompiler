@@ -23,15 +23,16 @@ real {integer}("."{integer})?
 "\n" {return (END) ;}
 "[" {return (LEFT_BRACKET) ;}
 "]" {return (RIGHT_BRACKET) ;}
-"(" return(LEFT_PARENTHESIS);
-")" return(RIGHT_PARENTHESIS);
+"(" return (LEFT_PARENTHESIS);
+")" return (RIGHT_PARENTHESIS);
 
-"+" return(PLUS);
-"-" return(MINUS);
-"*" return(TIMES);
-"/" return(DIVIDE);
-"pow" return(POW);
-"sqrt" return(SQRT);
+"+" return (PLUS);
+"=" return (EQUAL);
+"-" return (MINUS);
+"*" return (TIMES);
+"/" return (DIVIDE);
+"pow" return (POW);
+"sqrt" return (SQRT);
 
 
 {white} { /* We ignore white characters */ }
