@@ -3,6 +3,9 @@
 #include "sintatico.h"
 #include <stdlib.h>
 #include <stdio.h>
+
+int line_number = 1;
+
 %}
 
 white [ \t\r]+
@@ -22,7 +25,7 @@ real {integer}("."{integer})?
 
 ";" {return (COLON) ; }
 "," {return (COMA) ;}
-"\n" {return (END) ;}
+"\n" { ++line_number ; return (END) ;}
 "[" {return (LEFT_BRACKET) ;}
 "]" {return (RIGHT_BRACKET) ;}
 "(" return (LEFT_PARENTHESIS);

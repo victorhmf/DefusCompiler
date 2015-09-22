@@ -5,6 +5,7 @@
 #include <math.h>
 
 extern FILE *yyin;
+extern int line_number;
 %}
 
 %token END COLON COMA EQUAL
@@ -65,8 +66,8 @@ Declaration:
 
 %%
 
-int yyerror(char *s) {
-	 printf("%s\n",s);
+int yyerror(char *message) {
+	 printf("Message error: %s (line: %d)\n" , message , line_number);
 }
 
 void createOutput(FILE * in_file){
