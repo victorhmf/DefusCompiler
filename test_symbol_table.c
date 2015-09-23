@@ -5,15 +5,9 @@
 
 int main (){
 
-	node *list = (node *) malloc (sizeof(node));
+	node *list;
 
-	if(list == NULL){
-		printf("Mémoria Indisponível\n");
-		exit(1);
-	}
-	else
-	{	
-		createList(list);
+		list = createList(list);
 
 		node *SymbolTeste;
 		insertSymbol(list, "TESTE");
@@ -21,5 +15,5 @@ int main (){
 		SymbolTeste = findSymbol(list, "TESTE");
 
 		destroyList(list);
-	}
+
 }

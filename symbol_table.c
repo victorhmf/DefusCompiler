@@ -6,7 +6,14 @@
 #define TRUE 1
 #define FALSE 0
 
-void createList(node *list){
+node * createList(node *list){
+	list = (node*) malloc(sizeof(node));
+
+	if(list == NULL){
+		printf("Mémoria Indisponível\n");
+		exit(1);
+	}
+
 	list->next = NULL;
 }
 
@@ -81,23 +88,3 @@ void destroyList (node *list){
 		printf("Destruindo Lista\n");
 }
 
-int main (){
-
-	node *list = (node *) malloc (sizeof(node));
-
-	if(list == NULL){
-		printf("Mémoria Indisponível\n");
-		exit(1);
-	}
-	else
-	{	
-		createList(list);
-
-		node *SymbolTeste;
-		insertSymbol(list, "TESTE");
-
-		SymbolTeste = findSymbol(list, "TESTE");
-
-		destroyList(list);
-	}
-}

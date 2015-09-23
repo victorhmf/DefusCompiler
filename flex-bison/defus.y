@@ -6,13 +6,22 @@
 
 extern FILE *yyin;
 extern int line_number;
+extern node *list;
+
+
 %}
 
+
+%union {
+  double val;
+  char * symbol;
+}
+
 %token END COLON COMA EQUAL
-%token IDENTIFIER
+%token <symbol> IDENTIFIER
 %token INTEGER
 %token INT FLOAT CHAR DOUBLE
-%token REAL
+%token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 
@@ -34,7 +43,8 @@ Line:
 	;
 
 Declaration:
-	  INT IDENTIFIER  
+	IDENTIFIER {puts ("SYMBOL"); puts($1);}
+	| INT IDENTIFIER  
 	| FLOAT IDENTIFIER  
 	| DOUBLE IDENTIFIER  
 	| CHAR IDENTIFIER  

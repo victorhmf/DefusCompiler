@@ -13,7 +13,7 @@ node *node_iterator;
 node *current_node;
 node *next_node;
 
-void createList (node *list);
+node * createList (node *list);
 
 int is_empty(node *list);
 

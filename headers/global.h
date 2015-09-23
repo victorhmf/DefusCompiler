@@ -1,2 +1,6 @@
-#define YYSTYPE double
-extern YYSTYPE yylval;
+#ifndef GLOBAL
+
+#define GLOBAL
+#include "symbol_table.h"
+
+#endif

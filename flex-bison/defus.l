@@ -3,7 +3,7 @@
 #include "sintatico.h"
 #include <stdlib.h>
 #include <stdio.h>
-
+extern node * list;
 int line_number = 0;
 
 %}
@@ -41,9 +41,9 @@ real {integer}("."{integer})?
 
 
 {white} { /* We ignore white characters */ }
-{string} {return IDENTIFIER ;}
+{string} {yylval.symbol = strndup(yytext,40);return IDENTIFIER ;}
 {integer} {return INTEGER ;}
-{real} {yylval = atof(yytext); return(REAL); }
+{real} {yylval.val = atof(yytext); return(REAL); }
 
 %%
 
