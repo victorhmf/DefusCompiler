@@ -10,8 +10,9 @@ digit [0-9]
 integer {digit}+
 string  [a-z][a-z0-9]*
 real {integer}("."{integer})?
-
 %%
+
+"/*"	{ comment(); }
 
 "int" {return (INT) ;}
 "float" {return (FLOAT) ;} 
@@ -44,4 +45,17 @@ real {integer}("."{integer})?
 
 yywrap(){
   return 1;
+}
+
+comment(){
+	char c, c1;
+	loop:
+		while ((c = input()) != '*' && c != 0){}
+
+		if ((c1 = input()) != '/' && c != 0){
+			unput(c1);
+			goto loop;
+		}
+		if (c != 0){ printf ("comment \n") ; }
+			
 }
