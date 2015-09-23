@@ -10,8 +10,10 @@ digit [0-9]
 integer {digit}+
 string  [a-z][a-z0-9]*
 real {integer}("."{integer})?
-
 %%
+
+"//"	{ SingleLineComment(); }
+"/*"	{ MultiLineComment(); }
 
 "int" {return (INT) ;}
 "float" {return (FLOAT) ;} 
@@ -44,4 +46,26 @@ real {integer}("."{integer})?
 
 yywrap(){
   return 1;
+}
+
+MultiLineComment(){
+	char c, c1;
+	loop:
+		while ((c = input()) != '*' && c != 0){}
+		if ((c1 = input()) != '/' && c != 0){
+			unput(c1);
+			goto loop;
+		}
+		if (c != 0){ printf ("ml comment \n") ; }		
+}
+
+SingleLineComment(){
+	char c, c1;
+	loop:
+		while ((c = input()) != '\n' && c != 0){}
+		if (c != 0){
+			unput(c1);
+		 	printf ("sl comment \n") ; 		
+			goto loop;
+		}
 }
