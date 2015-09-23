@@ -12,7 +12,8 @@ string  [a-z][a-z0-9]*
 real {integer}("."{integer})?
 %%
 
-"/*"	{ comment(); }
+"//"	{ SingleLineComment(); }
+"/*"	{ MultiLineComment(); }
 
 "int" {return (INT) ;}
 "float" {return (FLOAT) ;} 
@@ -47,15 +48,24 @@ yywrap(){
   return 1;
 }
 
-comment(){
+MultiLineComment(){
 	char c, c1;
 	loop:
 		while ((c = input()) != '*' && c != 0){}
-
 		if ((c1 = input()) != '/' && c != 0){
 			unput(c1);
 			goto loop;
 		}
-		if (c != 0){ printf ("comment \n") ; }
-			
+		if (c != 0){ printf ("ml comment \n") ; }		
+}
+
+SingleLineComment(){
+	char c, c1;
+	loop:
+		while ((c = input()) != '\n' && c != 0){}
+		if (c != 0){
+			unput(c1);
+		 	printf ("sl comment \n") ; 		
+			goto loop;
+		}
 }
