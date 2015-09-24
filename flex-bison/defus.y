@@ -8,6 +8,12 @@ extern FILE *yyin;
 extern int line_number;
 extern node *list;
 
+void add_symbol_to_table (char * symbol){
+    node * list;
+    list = createList(list);
+    insertSymbol(list,symbol);
+    findSymbol(list,symbol);
+ }
 
 %}
 
@@ -42,9 +48,12 @@ Line:
 	| Atribution COLON { printf ("Atribuição encontrada! \n") ;}
 	;
 
+Variable:
+	IDENTIFIER { add_symbol_to_table($1);}
+;
+
 Declaration:
-	IDENTIFIER {puts ("SYMBOL"); puts($1);}
-	| INT IDENTIFIER  
+	 INT Variable
 	| FLOAT IDENTIFIER  
 	| DOUBLE IDENTIFIER  
 	| CHAR IDENTIFIER  
