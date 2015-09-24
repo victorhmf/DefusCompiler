@@ -8,12 +8,27 @@ extern FILE *yyin;
 extern int line_number;
 extern node *list;
 
+void newList(){
+	list = createList(list);
+}
+
 void add_symbol_to_table (char * symbol){
-    node * list;
-    list = createList(list);
-    insertSymbol(list,symbol);
-    findSymbol(list,symbol);
+
+
+    if(findSymbol(list,symbol)){
+    	printf("Variável já declarada\n");
+    }				
+    else
+    {
+    	insertSymbol(list,symbol);
+
+    }
+    
  }
+
+ void check_declaration (char * symbol){
+
+ }	
 
 %}
 
@@ -54,18 +69,18 @@ Variable:
 
 Declaration:
 	 INT Variable
-	| FLOAT IDENTIFIER  
-	| DOUBLE IDENTIFIER  
-	| CHAR IDENTIFIER  
-	| CHAR IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET
-	| Declaration COMA IDENTIFIER 
+	| FLOAT Variable  
+	| DOUBLE Variable  
+	| CHAR Variable  
+	| CHAR Variable LEFT_BRACKET INTEGER RIGHT_BRACKET
+	| Declaration COMA Variable
 
 	;	
 
 	Expression:
 		REAL
 		| INTEGER
-		|	IDENTIFIER
+		|	Variable
 		|	Expression PLUS Expression
 		|	Expression MINUS Expression
 		|	Expression DIVIDE Expression
@@ -77,7 +92,7 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression
+		Variable EQUAL Expression
 		|	Declaration EQUAL Expression
 
 		;
@@ -107,9 +122,9 @@ void createOutput(FILE * in_file){
 	}
 
 	fclose(output_file);
-}
 
 int main(int argc, char *argv[]){
+	newList();
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");
@@ -121,6 +136,7 @@ int main(int argc, char *argv[]){
 			exit -1;
 		}
 	} else {
+		newList();
 		yyparse();
 	}
 

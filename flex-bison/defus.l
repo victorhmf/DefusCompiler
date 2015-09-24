@@ -3,8 +3,10 @@
 #include "sintatico.h"
 #include <stdlib.h>
 #include <stdio.h>
-extern node * list;
+
 int line_number = 0;
+extern node *list;
+
 
 %}
 

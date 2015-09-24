@@ -42,10 +42,11 @@ void insertSymbol (node *list, char symbol [40])
 		list->next = new_node;
 
 		strcpy(new_node->symbol , symbol);
+		printf("Simbolo inserido!\n");
 	}
 }
 
-node * findSymbol (node *list, char symbol [40]) {
+int findSymbol (node *list, char symbol [40]) {
 	int search_completed = FALSE;
 
 	if(is_empty(list)){
@@ -61,7 +62,7 @@ node * findSymbol (node *list, char symbol [40]) {
 			search_completed = TRUE;
 			printf("Simbolo : %s encontrado \n", node_iterator->symbol);
 
-			return node_iterator;
+			return 1;
 		}
 		node_iterator = node_iterator->next;
 
@@ -69,6 +70,7 @@ node * findSymbol (node *list, char symbol [40]) {
 
 	if(search_completed == FALSE){
 		printf("Simbolo nao encontado! \n");
+		return 0;
 	}
 }
 

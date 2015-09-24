@@ -12,6 +12,7 @@ struct Node {
 node *node_iterator;
 node *current_node;
 node *next_node;
+node *list;
 
 node * createList (node *list);
 
@@ -19,7 +20,7 @@ int is_empty(node *list);
 
 void insertSymbol (node *list, char symbol [40]);
 
-node * findSymbol (node *list, char symbol [40]);
+int findSymbol (node *list, char symbol [40]);
 
 void destroy_list (node *node);
 
