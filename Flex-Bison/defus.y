@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+extern FILE *yyin;
 %}
 
 %token END COLON COMA EQUAL
@@ -67,9 +69,39 @@ int yyerror(char *s) {
 	 printf("%s\n",s);
 }
 
+void createOutput(FILE * in_file){
+	FILE *output_file;
+	FILE *source;
+	char ch;
 
-int main(void) {
-   yyparse();
+	mkdir("output/", 0700);
+	output_file = fopen( "output/defus.c" , "w");
+
+	while(1){
+		ch = fgetc(in_file);
+		if(ch == EOF){
+			fclose(in_file);
+			break;
+		} else
+		fputc(ch, output_file);
+	}
+
+	fclose(output_file);
 }
 
+int main(int argc, char *argv[]){
+	if(argc == 2){
+		FILE *input = fopen(argv[1],"r");
+		FILE * copy_input = fopen(argv[1],"r");
+		createOutput(copy_input);
+		yyin = input;
+		if(input == 0)
+		{
+			printf( "Could not open file\n" );
+			exit -1;
+		}
+	} else {
+		yyparse();
+	}
 
+}
