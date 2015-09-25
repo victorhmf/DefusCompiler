@@ -7,4 +7,4 @@ defus: Flex-Bison/defus.l Flex-Bison/defus.y
 	gcc -o defus sintatico.c lexico.c -lm
 
 clean:
-	rm lexico.* sintatico.* defus
+	rm lexico.* sintatico.* defus output/defus.c
