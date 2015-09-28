@@ -5,8 +5,6 @@
 #include <stdio.h>
 
 int line_number = 0;
-extern node *list;
-
 
 %}
 
@@ -43,8 +41,7 @@ real {integer}("."{integer})?
 
 
 {white} { /* We ignore white characters */ }
-{string} {yylval.symbol = strndup(yytext,40);return IDENTIFIER ;}
-{integer} {return INTEGER ;}
+{string} {yylval.symbol = strdup(yytext);return IDENTIFIER ;}
 {real} {yylval.val = atof(yytext); return(REAL); }
 
 %%
