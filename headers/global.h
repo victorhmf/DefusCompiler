@@ -1,2 +1,2 @@
-#define YYSTYPE double
-extern YYSTYPE yylval;
+#include "symbol_table.h"
+

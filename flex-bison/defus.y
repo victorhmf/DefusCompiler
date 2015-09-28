@@ -5,13 +5,47 @@
 #include <math.h>
 
 extern FILE *yyin;
+extern int line_number;
+extern node *list;
+extern char * yytext;
+
+void newList(){
+	list = createList(list);
+}
+
+void add_symbol_to_table (char * symbol){
+
+    if(findSymbol(list,symbol)){
+    	printf("Variável %s já declarada\n", symbol);
+    }				
+    else
+    {
+    	insertSymbol(list,symbol);
+    }    
+ }
+
+ void check_variable_declaration(char * symbol){
+
+ 		if(!findSymbol(list,symbol)){
+    	printf("Variável %s não foi declarada\n", symbol);
+    }
+    else 
+    {
+
+    }				
+ }
+
 %}
 
+%union {
+  double val;
+  char * symbol;
+}
+
 %token END COLON COMA EQUAL
-%token IDENTIFIER
-%token INTEGER
+%token <symbol> IDENTIFIER
 %token INT FLOAT CHAR DOUBLE
-%token REAL
+%token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 
@@ -28,24 +62,22 @@ Input:
 Line:
 	END
 	| Declaration COLON { printf ("Declaração de variável encontrada!\n"); }
-	| Expression COLON { printf ("Expressão encontrada!\n"); }
 	| Atribution COLON { printf ("Atribuição encontrada! \n") ;}
 	;
 
+
 Declaration:
-	  INT IDENTIFIER  
-	| FLOAT IDENTIFIER  
-	| DOUBLE IDENTIFIER  
-	| CHAR IDENTIFIER  
-	| CHAR IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET
-	| Declaration COMA IDENTIFIER 
+	 INT IDENTIFIER { add_symbol_to_table(yytext);}
+	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);}
+	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);}
+	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);}
+	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);}
 
 	;	
 
 	Expression:
 		REAL
-		| INTEGER
-		|	IDENTIFIER
+		|	IDENTIFIER {check_variable_declaration(yytext);}
 		|	Expression PLUS Expression
 		|	Expression MINUS Expression
 		|	Expression DIVIDE Expression
@@ -57,16 +89,16 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression
-		|	Declaration EQUAL Expression
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1);}
+		|	Declaration EQUAL Expression 
 
 		;
 
 
 %%
 
-int yyerror(char *s) {
-	 printf("%s\n",s);
+int yyerror(char *message) {
+	 printf("Message error: %s (line: %d)\n" , message , line_number);
 }
 
 void createOutput(FILE * in_file){
@@ -87,9 +119,9 @@ void createOutput(FILE * in_file){
 	}
 
 	fclose(output_file);
-}
 
 int main(int argc, char *argv[]){
+	newList();
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");
@@ -101,6 +133,7 @@ int main(int argc, char *argv[]){
 			exit -1;
 		}
 	} else {
+		newList();
 		yyparse();
 	}
 
