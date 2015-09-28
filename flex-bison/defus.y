@@ -119,6 +119,7 @@ void createOutput(FILE * in_file){
 	}
 
 	fclose(output_file);
+}
 
 int main(int argc, char *argv[]){
 	newList();
@@ -132,7 +133,9 @@ int main(int argc, char *argv[]){
 			printf( "Could not open file\n" );
 			exit -1;
 		}
-	} else {
+	} 
+	else 
+	{
 		newList();
 		yyparse();
 	}
