@@ -1,15 +1,14 @@
 # DefusCompiler
 
 ## escopo
-~~Técnicas abordadas:~~
+Técnicas abordadas:
 - Comentários
 - Inicialização de Variáveis
 - Variáveis não utilizadas
-- Nomes significativos de 
-- Variáveis
+- Nomes significativos de variáveis
 - Indentação
 
-~~Escopo linguagem C:~~
+Escopo linguagem C:
 - Atribuições
 - Operações
 - Bibliotecas

@@ -1,10 +1,10 @@
-defus: Flex-Bison/defus.l Flex-Bison/defus.y
-	bison -d Flex-Bison/defus.y
-	mv defus.tab.h sintatico.h
-	mv defus.tab.c sintatico.c
-	flex Flex-Bison/defus.l
-	mv lex.yy.c lexico.c
-	gcc -o defus sintatico.c lexico.c -lm
+defus: flex-bison/defus.l flex-bison/defus.y
+	bison -d flex-bison/defus.y
+	mv defus.tab.h output/sintatico.h
+	mv defus.tab.c output/sintatico.c
+	flex flex-bison/defus.l
+	mv lex.yy.c output/lexico.c
+	gcc -o defus output/sintatico.c output/lexico.c -lm -I headers
 
 clean:
-	rm lexico.* sintatico.* defus output/defus.c
+	rm output/lexico.* output/sintatico.* defus output/defus.c defus.output
