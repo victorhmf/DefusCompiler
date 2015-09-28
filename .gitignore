@@ -1,4 +1,5 @@
 defus
-sintatico.*
-lexico.*
+output/sintatico.*
+output/lexico.*
 *.swp
+defus.output
