@@ -8,6 +8,7 @@ extern FILE *yyin;
 extern int line_number;
 extern node *list;
 extern char * yytext;
+int id_error = 0;
 
 void newList(){
 	list = createList(list);
@@ -48,7 +49,8 @@ void add_symbol_to_table (char * symbol){
 %token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
-
+%token SPACE TAB
+%token RIGHT_BRACE LEFT_BRACE
 
 %start Input
 
@@ -66,39 +68,66 @@ Line:
 	;
 
 
+Space:
+	{id_error = 1 ;} SPACE 
+	
+	;
+
+
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table(yytext);}
-	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);}
-	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);}
-	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);}
-	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);}
+	 INT Space IDENTIFIER { add_symbol_to_table(yytext);
+	 												id_error = 0;
+	 											}
+	| FLOAT Space IDENTIFIER  { add_symbol_to_table(yytext);
+															id_error = 0;
+														}
+	| DOUBLE Space IDENTIFIER  { add_symbol_to_table(yytext);
+																id_error = 0;
+															}
+	| CHAR Space IDENTIFIER  { add_symbol_to_table(yytext);
+																id_error = 0;
+														}	
+	| Declaration COMA Space IDENTIFIER { add_symbol_to_table(yytext);
+																				id_error = 0;
+																			}
 
 	;	
 
 	Expression:
 		REAL
 		|	IDENTIFIER {check_variable_declaration(yytext);}
-		|	Expression PLUS Expression
-		|	Expression MINUS Expression
-		|	Expression DIVIDE Expression
-		|	Expression TIMES Expression
-		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS
-		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
-		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
-		| MINUS Expression %prec NEG
+		|	Expression Space PLUS Space Expression { id_error = 0;}
+		|	Expression Space MINUS Space Expression { id_error = 0;}
+		|	Expression Space DIVIDE Space Expression { id_error = 0;}
+		|	Expression Space TIMES Space Expression { id_error = 0;}
+		| POW LEFT_PARENTHESIS Expression Space COMA Space Expression RIGHT_PARENTHESIS { id_error = 0;}
+		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS { id_error = 0;}
+		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS { id_error = 0;}
+		| MINUS Expression %prec NEG { id_error = 0;}
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1);}
-		|	Declaration EQUAL Expression 
-
+		IDENTIFIER Space EQUAL Space Expression {check_variable_declaration($1);
+																							id_error = 0;
+																						}
+		|	Declaration Space EQUAL Space Expression { id_error = 0;}
 		;
 
 
 %%
 
 int yyerror(char *message) {
-	 printf("Message error: %s (line: %d)\n" , message , line_number);
+
+	switch (id_error){
+	 
+	 	case 1:
+	 		printf("Erro de indentação! (line: %d) \n", line_number);
+	 	break;
+
+	 	default:
+			printf("Message error: %s (line: %d)\n" , message , line_number);
+		break ;
+	}
 }
 
 void createOutput(FILE * in_file){
@@ -122,6 +151,7 @@ void createOutput(FILE * in_file){
 }
 
 int main(int argc, char *argv[]){
+	newList();
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");
@@ -135,14 +165,13 @@ int main(int argc, char *argv[]){
 	} 
 	else 
 	{
-		newList();
 		yyparse();
 	}
 
-	newList();
-    while (!feof(yyin)){
-        yyparse();
-    }
+  while (!feof(yyin)){
+    yyparse();
+  }
 
 
 }
+	

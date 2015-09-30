@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int line_number = 0;
+int line_number = 1;
 
 %}
 
@@ -30,6 +30,8 @@ real {integer}("."{integer})?
 "]" {return (RIGHT_BRACKET) ;}
 "(" return (LEFT_PARENTHESIS);
 ")" return (RIGHT_PARENTHESIS);
+"{" return (LEFT_BRACE);
+"}" return (RIGHT_BRACE);
 
 "+" return (PLUS);
 "=" return (EQUAL);
@@ -39,8 +41,10 @@ real {integer}("."{integer})?
 "pow" return (POW);
 "sqrt" return (SQRT);
 
+" " return (SPACE);
+"\t" return (TAB);
 
-{white} { /* We ignore white characters */ }
+
 {string} {yylval.symbol = strdup(yytext);return IDENTIFIER ;}
 {real} {yylval.val = atof(yytext); return(REAL); }
 

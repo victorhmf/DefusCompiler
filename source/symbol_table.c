@@ -42,7 +42,7 @@ void insertSymbol (node *list, char symbol [40])
 		list->next = new_node;
 
 		strcpy(new_node->symbol , symbol);
-		printf("Simbolo inserido!\n");
+		printf("Simbolo '%s' inserido !\n" , new_node->symbol);
 	}
 }
 
