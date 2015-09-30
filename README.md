@@ -15,3 +15,12 @@ Escopo linguagem C:
 - If/Else
 - For
 - Funções
+
+## Erros abordados
+
+| Erro 	| Tipo 		| Message 								|
+|:----:	|:----:		| ----------------------------			|
+|E01   	| Identação	| Wrong identent. Tab missing.      	|
+|E02    | Espaços	| Space missing.        				|
+|E03    | Comentário| Comment missing.        				|
+|	    |      		|         								|
