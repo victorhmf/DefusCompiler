@@ -123,6 +123,7 @@ void createOutput(FILE * in_file){
 }
 
 int main(int argc, char *argv[]){
+			newList();
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");
@@ -133,17 +134,13 @@ int main(int argc, char *argv[]){
 			printf( "Could not open file\n" );
 			exit -1;
 		}
-	} 
-	else 
-	{
-		newList();
-		yyparse();
-	}
-
-	newList();
     while (!feof(yyin)){
         yyparse();
     }
-
+	} 
+	else 
+	{
+		yyparse();
+	}
 
 }
