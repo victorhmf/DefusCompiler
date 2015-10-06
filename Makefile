@@ -8,3 +8,11 @@ defus: flex-bison/defus.l flex-bison/defus.y
 
 clean:
 	rm output/lexico.* output/sintatico.* defus output/defus.c defus.output
+
+test:
+	./defus < tests/declaration/testeDeclaration01.c
+	./defus < tests/declaration/testeDeclaration02.c
+	./defus < tests/atribution/exemplo01.c
+	./defus < tests/atribution/exemplo02.c
+	./defus < tests/expression/Teste01.c
+	./defus < tests/expression/Teste02.c

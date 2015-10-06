@@ -123,7 +123,8 @@ void createOutput(FILE * in_file){
 }
 
 int main(int argc, char *argv[]){
-			newList();
+	newList();
+	
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");

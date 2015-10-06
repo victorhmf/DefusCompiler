@@ -1,6 +1,5 @@
-int x , z , y;
+int x, z, y;
+
 x = 5;
 
-z= 8 + z;
-
-
+z = 8 + z;
