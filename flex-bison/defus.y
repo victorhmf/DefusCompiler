@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 extern FILE *yyin;
 extern int line_number;
@@ -12,6 +13,18 @@ extern char * yytext;
 
 void newList(){
 	list = createList(list);
+}
+
+void check_lenght_variable(char * symbol){
+	int lenght_variable = strlen(symbol);
+	
+	if(lenght_variable <= 3){
+		printf("A variável '%s' não possui um nome significativo\n" , symbol);
+	}
+	else
+	{
+
+	}
 }
 
 void add_symbol_to_table (char * symbol){
@@ -68,11 +81,20 @@ Line:
 
 
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table(yytext);}
-	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);}
-	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);}
-	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);}
-	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);}
+	 INT IDENTIFIER { add_symbol_to_table(yytext);
+	 									check_lenght_variable(yytext);}
+	
+	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);
+											check_lenght_variable(yytext);}
+	
+	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);
+											check_lenght_variable(yytext);}
+	
+	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);
+										check_lenght_variable(yytext);}
+	
+	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);
+																check_lenght_variable(yytext);}
 
 	;	
 
