@@ -8,6 +8,7 @@
 
 extern FILE *yyin;
 extern int line_number;
+extern int num_comments;
 extern node *list;
 extern char * yytext;
 
@@ -157,12 +158,14 @@ int main(int argc, char *argv[]){
 			printf( "Could not open file\n" );
 			exit -1;
 		}
-    while (!feof(yyin)){
-        yyparse();
-    }
-	} 
-	else 
-	{
+	    while (!feof(yyin)){
+	        yyparse();
+	    }
+	    if(num_comments == 0)
+	    {
+	    	printf("Nenhum comentario encontrado!\n");
+	    }
+	} else {
 		yyparse();
 	}
 

@@ -1,0 +1,16 @@
+Lista Vazia
+Simbolo x inserido!
+A variável 'x' não possui um nome significativo
+Simbolo z nao encontado! 
+Simbolo z inserido!
+A variável 'z' não possui um nome significativo
+Simbolo y nao encontado! 
+Simbolo y inserido!
+A variável 'y' não possui um nome significativo
+Declaração de variável encontrada!
+Simbolo x encontrado 
+Atribuição encontrada! 
+Simbolo z encontrado 
+Simbolo z encontrado 
+Atribuição encontrada! 
+Nenhum comentario encontrado!
