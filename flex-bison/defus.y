@@ -131,7 +131,7 @@ void createOutput(FILE * in_file){
 	char ch;
 
 	mkdir("output/", 0700);
-	output_file = fopen( "output/defus.c" , "w");
+	output_file = fopen( "output/log.c" , "w");
 
 	while(1){
 		ch = fgetc(in_file);
@@ -168,5 +168,7 @@ int main(int argc, char *argv[]){
 	} else {
 		yyparse();
 	}
+
+	return 0;
 
 }

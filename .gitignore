@@ -3,3 +3,4 @@ output/sintatico.*
 output/lexico.*
 *.swp
 defus.output
+output/log.txt

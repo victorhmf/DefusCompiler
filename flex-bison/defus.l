@@ -62,17 +62,14 @@ MultiLineComment(){
 		if (c != 0){
 			num_comments++;
 			printf ("ml comment \n") ;
-			printf ("%d comentarios\n", num_comments);
 	}		
 }
 
 SingleLineComment(){
-	char c, c1;
-	loop:
+	char c;
+
 		while ((c = input()) != '\n' && c != 0){}
-		if (c != 0){
-			unput(c1);
-		 	printf ("sl comment \n") ; 		
-			goto loop;
-		}
+		num_comments++;
+		printf ("sl comment \n") ;
+	
 }
