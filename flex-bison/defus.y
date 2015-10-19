@@ -12,9 +12,6 @@ extern int num_comments;
 extern node *list;
 extern char * yytext;
 
-void newList(){
-	list = createList(list);
-}
 
 void check_lenght_variable(char * symbol){
 	int lenght_variable = strlen(symbol);
@@ -35,7 +32,8 @@ void add_symbol_to_table (char * symbol){
     }				
     else
     {
-    	insertSymbol(list,symbol);
+    	node *new_node = (node*) malloc(sizeof(node));
+    	insertSymbol(list,symbol,new_node);
     }    
  }
 
@@ -146,7 +144,8 @@ void createOutput(FILE * in_file){
 }
 
 int main(int argc, char *argv[]){
-	newList();
+	
+	list = createList(list);
 	
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");

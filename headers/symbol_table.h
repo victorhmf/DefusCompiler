@@ -6,6 +6,7 @@ struct Node {
 	
 	char symbol [40];
 	node *next;
+	int initialized;
 
 };
 
@@ -18,7 +19,7 @@ node * createList (node *list);
 
 int is_empty(node *list);
 
-void insertSymbol (node *list, char symbol [40]);
+void insertSymbol (node *list, char symbol [40], node * new_node);
 
 int findSymbol (node *list, char symbol [40]);
 

@@ -28,9 +28,8 @@ int is_empty(node *list)
 	}
 }
 
-void insertSymbol (node *list, char symbol [40]) 
+void insertSymbol (node *list, char symbol [40], node * new_node) 
 {
-	node *new_node = (node*) malloc(sizeof(node));
 
 	if(new_node == NULL){
 		printf("Memória Indisponível");
