@@ -1,6 +1,7 @@
 %{
 #include "global.h"
 #include "error_list.h"
+#include "msg_error_list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -10,6 +11,7 @@ extern FILE *yyin;
 extern int line_number;
 extern int num_comments;
 extern node *list;
+extern line *list_error;
 extern char * yytext;
 
 
@@ -28,7 +30,9 @@ void check_lenght_variable(char * symbol){
 void add_symbol_to_table (char * symbol){
 
     if(findSymbol(list,symbol)){
-    	printf("Variável %s já declarada\n", symbol);
+    	char msg [100];
+    	snprintf(msg, 100, "Variável %s já declarada", symbol);
+    	insert_msg(list_error, msg, line_number);
     }				
     else
     {
@@ -146,6 +150,7 @@ void createOutput(FILE * in_file){
 int main(int argc, char *argv[]){
 	
 	list = createList(list);
+	list_error = create_list_error(list_error);
 	
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");

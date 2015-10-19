@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node node;
-struct Node{
+typedef struct Line line;
+struct Line{
 	
 	char msg [100];
 	int line_number;
-	node * next;
+	line * next;
 
 };
 
-node * list_error;
+line * list_error;
 
-node * createList(node * list);
+line * create_list_error(line * list);
 
-int is_empty(node *list);
+int is_empty_list(line *list);
 
-void insert_msg(node *list, char msg[100], int line_number);
+void insert_msg(line *list, char msg[100], int line_number);
 
-void print_msg(node *list);
+void print_msg(line *list);
 

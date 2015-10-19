@@ -3,9 +3,10 @@
 #include <string.h>
 #include "msg_error_list.h"
 
-node * createList(node * list){
-	
-	list = (node*) malloc(sizeof(node));
+line * create_list_error(line * list){
+
+list = (line*) malloc(sizeof(line));
+
 	if(list == NULL){
 		printf("Mémoria Indisponível\n");
 		exit(1);
@@ -14,8 +15,7 @@ node * createList(node * list){
 	list->next = NULL;
 }
 
-int is_empty(node *list)
-{
+int is_empty_list(line *list){
 	if(list->next == NULL){
 		return 1;
 	}
@@ -25,9 +25,10 @@ int is_empty(node *list)
 	}
 }
 
-void insert_msg(node * list , char msg[100], int line_number){
 
-	node * new_node = (node*) malloc(sizeof(node));
+void insert_msg(line * list , char msg[100], int line_number){
+
+	line * new_node = (line*) malloc(sizeof(line));
 
 	if(new_node == NULL){
 		printf("Memória Indisponível");
@@ -45,15 +46,15 @@ void insert_msg(node * list , char msg[100], int line_number){
 	}
 }
 
-void print_msg(node *list) {
+void print_msg(line *list) {
 
-	if(is_empty(list)){
+	if(is_empty_list(list)){
 		printf("Lista Vazia\n");
 
 	}
 	else 
 	{
-		node * iterator;
+		line * iterator;
 		iterator = list->next;
 
 		while(iterator != NULL){
