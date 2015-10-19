@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 int line_number = 0;
+int num_comments = 0;
 
 %}
 
@@ -53,21 +54,22 @@ yywrap(){
 MultiLineComment(){
 	char c, c1;
 	loop:
-		while ((c = input()) != '*' && c != 0){}
+		while ((c = input()) != '*' && c != 0){	}
 		if ((c1 = input()) != '/' && c != 0){
 			unput(c1);
 			goto loop;
 		}
-		if (c != 0){ printf ("ml comment \n") ; }		
+		if (c != 0){
+			num_comments++;
+			printf ("ml comment \n") ;
+	}		
 }
 
 SingleLineComment(){
-	char c, c1;
-	loop:
+	char c;
+
 		while ((c = input()) != '\n' && c != 0){}
-		if (c != 0){
-			unput(c1);
-		 	printf ("sl comment \n") ; 		
-			goto loop;
-		}
+		num_comments++;
+		printf ("sl comment \n") ;
+	
 }

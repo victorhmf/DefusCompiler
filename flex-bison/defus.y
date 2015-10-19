@@ -8,6 +8,7 @@
 
 extern FILE *yyin;
 extern int line_number;
+extern int num_comments;
 extern node *list;
 extern char * yytext;
 
@@ -130,7 +131,7 @@ void createOutput(FILE * in_file){
 	char ch;
 
 	mkdir("output/", 0700);
-	output_file = fopen( "output/defus.c" , "w");
+	output_file = fopen( "output/log.c" , "w");
 
 	while(1){
 		ch = fgetc(in_file);
@@ -157,13 +158,17 @@ int main(int argc, char *argv[]){
 			printf( "Could not open file\n" );
 			exit -1;
 		}
-    while (!feof(yyin)){
-        yyparse();
-    }
-	} 
-	else 
-	{
+	    while (!feof(yyin)){
+	        yyparse();
+	    }
+	    if(num_comments == 0)
+	    {
+	    	printf("Nenhum comentario encontrado!\n");
+	    }
+	} else {
 		yyparse();
 	}
+
+	return 0;
 
 }
