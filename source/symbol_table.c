@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symbol_table.h"
+#include "msg_error_list.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -41,7 +42,11 @@ void insertSymbol (node *list, char symbol [40], node * new_node)
 		list->next = new_node;
 
 		strcpy(new_node->symbol , symbol);
-		printf("Simbolo %s inserido!\n", new_node->symbol);
+		
+		char msg [100];
+		snprintf(msg, 100, "Simbolo %s inserido!\n", new_node->symbol);
+		
+		insert_msg(list_msg_sucess, msg , 0);
 	}
 }
 
@@ -49,7 +54,9 @@ int findSymbol (node *list, char symbol [40]) {
 	int search_completed = FALSE;
 
 	if(is_empty(list)){
-		printf("Lista Vazia\n");
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
 		return 0;
 	}
 
@@ -59,8 +66,12 @@ int findSymbol (node *list, char symbol [40]) {
 
 		if(strcmp(symbol, node_iterator->symbol) == 0){
 			search_completed = TRUE;
-			printf("Simbolo %s encontrado \n", node_iterator->symbol);
 
+			char msg [100];
+			snprintf(msg, 100, "Simbolo %s encontrado ", node_iterator->symbol);
+			
+			insert_msg(list_msg_sucess, msg , 0);
+			
 			return 1;
 		}
 		node_iterator = node_iterator->next;
@@ -68,7 +79,11 @@ int findSymbol (node *list, char symbol [40]) {
 	}
 
 	if(search_completed == FALSE){
-		printf("Simbolo %s nao encontado! \n", symbol);
+		char msg [100];
+		snprintf(msg, 100, "Simbolo %s nao encontado", symbol);
+		
+		insert_msg(list_msg_sucess, msg , 0);
+
 		return 0;
 	}
 }

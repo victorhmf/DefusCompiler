@@ -3,7 +3,7 @@
 #include <string.h>
 #include "msg_error_list.h"
 
-line * create_list_error(line * list){
+line * create_list_msg(line * list){
 
 list = (line*) malloc(sizeof(line));
 
@@ -41,8 +41,6 @@ void insert_msg(line * list , char msg[100], int line_number){
 
 		strcpy(new_node->msg , msg);
 		new_node->line_number = line_number;
-
-		printf("Mensagem '%s' inserida!\n", new_node->msg);
 	}
 }
 
@@ -64,3 +62,30 @@ void print_msg(line *list) {
 	}
 }
 
+void generate_log(line *list) {
+
+	if(is_empty_list(list)){
+		printf("Lista Vazia\n");
+
+	}
+	else 
+	{
+	
+		FILE * f_pont;
+
+		f_pont = fopen ("output/log.txt" , "w");
+	
+		line * iterator;
+	
+		iterator = list->next;
+
+		while(iterator != NULL){
+			fprintf(f_pont , "%s , linha: %d\n" , iterator->msg , iterator->line_number);
+			iterator = iterator->next;
+		}
+
+		fclose(f_pont);
+
+	}
+
+}

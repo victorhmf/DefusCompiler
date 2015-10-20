@@ -12,6 +12,7 @@ extern int line_number;
 extern int num_comments;
 extern node *list;
 extern line *list_error;
+extern line *list_msg_sucess;
 extern char * yytext;
 
 
@@ -19,7 +20,9 @@ void check_lenght_variable(char * symbol){
 	int lenght_variable = strlen(symbol);
 	
 	if(lenght_variable <= 3){
-		printf("A variável '%s' não possui um nome significativo\n" , symbol);
+		char msg[100];
+		snprintf(msg, 100, "A variável '%s' não possui um nome significativo\n" , symbol);
+		insert_msg(list_error, msg, line_number);
 	}
 	else
 	{
@@ -31,8 +34,11 @@ void add_symbol_to_table (char * symbol){
 
     if(findSymbol(list,symbol)){
     	char msg [100];
+
     	snprintf(msg, 100, "Variável %s já declarada", symbol);
     	insert_msg(list_error, msg, line_number);
+    	
+    	exit(1);
     }				
     else
     {
@@ -44,7 +50,12 @@ void add_symbol_to_table (char * symbol){
  void check_variable_declaration(char * symbol){
 
  		if(!findSymbol(list,symbol)){
-    	printf("Variável %s não foi declarada\n", symbol);
+    	char msg[100];
+
+    	snprintf(msg, 100, "Variável %s não foi declarada\n", symbol);
+    	insert_msg(list_error , msg, line_number);
+
+    	exit(1);
     }
     else 
     {
@@ -78,8 +89,13 @@ Input:
 	
 Line:
 	END
-	| Declaration COLON { printf ("Declaração de variável encontrada!\n"); }
-	| Atribution COLON { printf ("Atribuição encontrada! \n") ;}
+	| Declaration COLON { char msg[100];
+												snprintf (msg, 100, "Declaração de variável encontrada!"); 
+												insert_msg(list_msg_sucess, msg, line_number);}
+
+	| Atribution COLON {	char msg[100];
+		 										snprintf (msg, 100, "Atribuição encontrada!") ;
+		 										insert_msg(list_msg_sucess, msg, line_number);}
 	;
 
 
@@ -124,7 +140,9 @@ Declaration:
 %%
 
 int yyerror(char *message) {
-	 printf("Message error: %s (line: %d)\n" , message , line_number);
+	 char msg[100];
+	 snprintf(msg, 100, "Message error: %s \n" , message);
+	 insert_msg(list_error, msg, line_number);
 }
 
 void createOutput(FILE * in_file){
@@ -150,8 +168,9 @@ void createOutput(FILE * in_file){
 int main(int argc, char *argv[]){
 	
 	list = createList(list);
-	list_error = create_list_error(list_error);
-	
+	list_error = create_list_msg(list_error);
+	list_msg_sucess = create_list_msg(list_msg_sucess);
+
 	if(argc == 2){
 		FILE *input = fopen(argv[1],"r");
 		FILE * copy_input = fopen(argv[1],"r");
@@ -170,9 +189,10 @@ int main(int argc, char *argv[]){
 	    	printf("Nenhum comentario encontrado!\n");
 	    }
 	} else {
+		
 		yyparse();
+	
 	}
 
 	return 0;
-
 }
