@@ -3,9 +3,11 @@
 #include "sintatico.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "msg_error_list.h"
 
-int line_number = 0;
+
 int num_comments = 0;
+int line_number = 1;
 
 %}
 
@@ -61,7 +63,9 @@ MultiLineComment(){
 		}
 		if (c != 0){
 			num_comments++;
-			printf ("ml comment \n") ;
+			char msg[100];
+			snprintf (msg, 100, "ml comment") ;
+			insert_msg(list_msg_sucess, msg, line_number);
 	}		
 }
 
@@ -70,6 +74,11 @@ SingleLineComment(){
 
 		while ((c = input()) != '\n' && c != 0){}
 		num_comments++;
-		printf ("sl comment \n") ;
+		
+		char msg[100];
+		snprintf (msg, 100, "sl comment") ;
+
+		insert_msg(list_msg_sucess, msg, line_number);
+
 	
 }
