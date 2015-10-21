@@ -85,7 +85,7 @@ void generate_log(line *list) {
 	
 		FILE * f_pont;
 
-		f_pont = fopen ("output/log.txt" , "a");
+		f_pont = fopen ("output/log.txt" , "w");
 	
 		line * iterator;
 	

@@ -40,7 +40,7 @@ void add_symbol_to_table (char * symbol){
     if(findSymbol(list,symbol)){
     	char msg [100];
 
-    	snprintf(msg, 100, "Variável %s já declarada", symbol);
+    	snprintf(msg, 100, "Variável '%s' já declarada", symbol);
     	insert_msg(list_error, msg, line_number);
     	exit(1);
     }				
@@ -56,7 +56,7 @@ void add_symbol_to_table (char * symbol){
  		if(!findSymbol(list,symbol)){
     	char msg[100];
 
-    	snprintf(msg, 100, "Variável %s não foi declarada", symbol);
+    	snprintf(msg, 100, "Variável '%s' não foi declarada", symbol);
     	insert_msg(list_error , msg, line_number);
 
     	exit(1);
