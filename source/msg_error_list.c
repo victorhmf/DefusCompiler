@@ -36,9 +36,21 @@ void insert_msg(line * list , char msg[100], int line_number){
 	}
 	else
 	{
-		new_node->next = list->next;
-		list->next = new_node;
 
+		if (is_empty_list(list)){
+			list->next = new_node;
+			new_node->next = NULL;
+		}
+		else{
+			
+			line * iterator = list->next;
+
+			while(iterator->next != NULL){
+				iterator = iterator->next;
+			}
+			iterator->next = new_node;
+			new_node->next = NULL;
+		}
 		strcpy(new_node->msg , msg);
 		new_node->line_number = line_number;
 	}
@@ -73,7 +85,7 @@ void generate_log(line *list) {
 	
 		FILE * f_pont;
 
-		f_pont = fopen ("output/log.txt" , "w");
+		f_pont = fopen ("output/log.txt" , "a");
 	
 		line * iterator;
 	

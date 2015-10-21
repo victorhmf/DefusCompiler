@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int line_number = 0;
 int num_comments = 0;
+int line_number = 1;
 
 %}
 
