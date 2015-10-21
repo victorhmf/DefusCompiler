@@ -191,7 +191,10 @@ int main(int argc, char *argv[]){
 	    }
 	    if(num_comments == 0)
 	    {
-	    	printf("Nenhum comentario encontrado!\n");
+	    	char msg [100];
+	    	snprintf(msg, 100 , "Nenhum comentario foi encontrado no código");
+
+	    	insert_msg(list_error, msg, line_number);
 	    }
 	} else {
 		
