@@ -104,3 +104,32 @@ void destroyList (node *list){
 		printf("Destruindo Lista\n");
 }
 
+void check_initialized_var (node *list){
+
+	if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else {
+		node_iterator = list->next;
+
+		while(node_iterator !=NULL){
+
+			if(node_iterator->initialized == 0){
+				char msg[100];
+				snprintf(msg ,100, "Variável '%s' não inicializada" , node_iterator->symbol);
+				insert_msg(list_error, msg, 0);
+			}
+			else{
+
+			}
+
+			node_iterator = node_iterator->next;
+		}
+	}
+
+
+
+}
+

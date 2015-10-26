@@ -16,6 +16,7 @@ extern line *list_msg_sucess;
 extern char * yytext;
 
 void beforexit(){
+	check_initialized_var(list);
 	print_msg(list_error);
 	generate_log(list_error);
 }
@@ -47,9 +48,11 @@ void add_symbol_to_table (char * symbol){
     else
     {
     	node *new_node = (node*) malloc(sizeof(node));
+    	new_node->initialized = 0;
     	insertSymbol(list,symbol,new_node);
     }    
  }
+
 
  void check_variable_declaration(char * symbol){
 

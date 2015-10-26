@@ -1,6 +1,6 @@
 defus
 output/sintatico.*
 output/lexico.*
+output/log.*
 *.swp
 defus.output
-output/log.txt

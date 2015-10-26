@@ -25,3 +25,5 @@ int findSymbol (node *list, char symbol [40]);
 
 void destroy_list (node *node);
 
+void check_initialized_var (node *list);
+
