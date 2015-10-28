@@ -38,9 +38,21 @@ void insertSymbol (node *list, char symbol [40], node * new_node)
 	}
 	else
 	{
-		new_node->next = list->next;
-		list->next = new_node;
 
+		if (is_empty(list)){
+			list->next = new_node;
+			new_node->next = NULL;
+		}
+		else{
+			
+			node * iterator = list->next;
+
+			while(iterator->next != NULL){
+				iterator = iterator->next;
+			}
+			iterator->next = new_node;
+			new_node->next = NULL;
+		}
 		strcpy(new_node->symbol , symbol);
 		
 		char msg [100];

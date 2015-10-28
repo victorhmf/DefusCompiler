@@ -59,7 +59,6 @@ void insert_msg(line * list , char msg[100], int line_number){
 void print_msg(line *list) {
 
 	if(is_empty_list(list)){
-		printf("Lista Vazia\n");
 
 	}
 	else 
@@ -77,7 +76,6 @@ void print_msg(line *list) {
 void generate_log(line *list) {
 
 	if(is_empty_list(list)){
-		printf("Lista Vazia\n");
 
 	}
 	else 
