@@ -7,7 +7,7 @@ defus: flex-bison/defus.l flex-bison/defus.y
 	gcc -o defus output/sintatico.c output/lexico.c source/symbol_table.c source/msg_error_list.c -lm -I headers
 
 clean:
-	rm output/lexico.* output/sintatico.* defus output/defus.c defus.output output/log.txt
+	rm output/lexico.* output/sintatico.* defus output/defus.c output/log.*
 
 test:
 	./defus < tests/declaration/testeDeclaration01.c

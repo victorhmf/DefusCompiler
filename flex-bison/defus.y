@@ -49,6 +49,7 @@ void add_symbol_to_table (char * symbol){
     {
     	node *new_node = (node*) malloc(sizeof(node));
     	new_node->initialized = 0;
+    	new_node->line_number = line_number;
     	insertSymbol(list,symbol,new_node);
     }    
  }
@@ -138,7 +139,7 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1);}
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1); set_initialized_1(list, $1);}
 		|	Declaration EQUAL Expression 
 
 		;

@@ -119,7 +119,7 @@ void check_initialized_var (node *list){
 			if(node_iterator->initialized == 0){
 				char msg[100];
 				snprintf(msg ,100, "Variável '%s' não inicializada" , node_iterator->symbol);
-				insert_msg(list_error, msg, 0);
+				insert_msg(list_error, msg, node_iterator->line_number);
 			}
 			else{
 
@@ -128,8 +128,31 @@ void check_initialized_var (node *list){
 			node_iterator = node_iterator->next;
 		}
 	}
-
-
-
 }
 
+void set_initialized_1 (node *list, char symbol[40]){
+
+	if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else{
+		node_iterator = list->next;
+
+		while(node_iterator != NULL){
+
+			if(strcmp(symbol, node_iterator->symbol) == 0){
+
+				char msg [100];
+				snprintf(msg, 100, "Simbolo %s encontrado ", node_iterator->symbol);
+			
+				insert_msg(list_msg_sucess, msg ,0);
+
+				node_iterator->initialized = 1;	
+			}
+			node_iterator = node_iterator->next;
+		}
+
+	}
+}
