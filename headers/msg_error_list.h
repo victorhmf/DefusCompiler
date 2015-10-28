@@ -23,4 +23,6 @@ void print_msg(line *list);
 
 void generate_log(line *list);
 
+void ordena_por_linha(line* list);
+
 

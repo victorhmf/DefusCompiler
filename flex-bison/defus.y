@@ -17,8 +17,9 @@ extern char * yytext;
 
 void beforexit(){
 	check_initialized_var(list);
-	print_msg(list_error);
 	generate_log(list_error);
+	print_msg(list_error);
+	
 }
 
 void check_lenght_variable(char * symbol){

@@ -63,6 +63,7 @@ void print_msg(line *list) {
 	}
 	else 
 	{
+		ordena_por_linha(list);
 		line * iterator;
 		iterator = list->next;
 
@@ -80,7 +81,7 @@ void generate_log(line *list) {
 	}
 	else 
 	{
-	
+		ordena_por_linha(list);
 		FILE * f_pont;
 
 		f_pont = fopen ("output/log.txt" , "w");
@@ -98,4 +99,29 @@ void generate_log(line *list) {
 
 	}
 
+}
+
+
+void ordena_por_linha(line *list)
+{
+  line *iterator1, *iterator2;
+  char temp [100];
+  int temp2;
+
+
+	for(iterator1 = list->next; iterator1 != NULL; iterator1 = iterator1->next){
+		for(iterator2 = iterator1->next; iterator2 != NULL; iterator2 = iterator2->next){
+			if(iterator1->line_number > iterator2->line_number){
+				
+				strcpy(temp, iterator1->msg);
+				strcpy(iterator1->msg, iterator2->msg);
+				strcpy(iterator2->msg, temp);
+
+				temp2 = iterator1->line_number;
+				iterator1->line_number = iterator2->line_number;
+				iterator2->line_number = temp2;
+
+			}
+		}
+	}
 }
