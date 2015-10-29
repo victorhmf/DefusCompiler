@@ -38,9 +38,21 @@ void insertSymbol (node *list, char symbol [40], node * new_node)
 	}
 	else
 	{
-		new_node->next = list->next;
-		list->next = new_node;
 
+		if (is_empty(list)){
+			list->next = new_node;
+			new_node->next = NULL;
+		}
+		else{
+			
+			node * iterator = list->next;
+
+			while(iterator->next != NULL){
+				iterator = iterator->next;
+			}
+			iterator->next = new_node;
+			new_node->next = NULL;
+		}
 		strcpy(new_node->symbol , symbol);
 		
 		char msg [100];
@@ -104,3 +116,55 @@ void destroyList (node *list){
 		printf("Destruindo Lista\n");
 }
 
+void check_initialized_var (node *list){
+
+	if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else {
+		node_iterator = list->next;
+
+		while(node_iterator !=NULL){
+
+			if(node_iterator->initialized == 0){
+				char msg[100];
+				snprintf(msg ,100, "Variável '%s' não inicializada" , node_iterator->symbol);
+				insert_msg(list_error, msg, node_iterator->line_number);
+			}
+			else{
+
+			}
+
+			node_iterator = node_iterator->next;
+		}
+	}
+}
+
+void set_initialized_1 (node *list, char symbol[40]){
+
+	if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else{
+		node_iterator = list->next;
+
+		while(node_iterator != NULL){
+
+			if(strcmp(symbol, node_iterator->symbol) == 0){
+
+				char msg [100];
+				snprintf(msg, 100, "Simbolo %s encontrado ", node_iterator->symbol);
+			
+				insert_msg(list_msg_sucess, msg ,0);
+
+				node_iterator->initialized = 1;	
+			}
+			node_iterator = node_iterator->next;
+		}
+
+	}
+}

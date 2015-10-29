@@ -1,4 +1,4 @@
-int x, z, y;
+int x;
 
 x = 5;
 

@@ -16,8 +16,10 @@ extern line *list_msg_sucess;
 extern char * yytext;
 
 void beforexit(){
-	print_msg(list_error);
+	check_initialized_var(list);
 	generate_log(list_error);
+	print_msg(list_error);
+	
 }
 
 void check_lenght_variable(char * symbol){
@@ -47,9 +49,12 @@ void add_symbol_to_table (char * symbol){
     else
     {
     	node *new_node = (node*) malloc(sizeof(node));
+    	new_node->initialized = 0;
+    	new_node->line_number = line_number;
     	insertSymbol(list,symbol,new_node);
     }    
  }
+
 
  void check_variable_declaration(char * symbol){
 
@@ -135,7 +140,7 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1);}
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1); set_initialized_1(list, $1);}
 		|	Declaration EQUAL Expression 
 
 		;
@@ -194,7 +199,7 @@ int main(int argc, char *argv[]){
 	    	char msg [100];
 	    	snprintf(msg, 100 , "Nenhum comentario foi encontrado no código");
 
-	    	insert_msg(list_error, msg, line_number);
+	    	insert_msg(list_error, msg, 0);
 	    }
 	} else {
 		
