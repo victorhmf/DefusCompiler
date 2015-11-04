@@ -52,6 +52,7 @@ void add_symbol_to_table (char * symbol){
     {
     	node *new_node = (node*) malloc(sizeof(node));
     	new_node->initialized = 0;
+    	new_node->utilized = 0;
     	new_node->line_number = line_number;
     	insertSymbol(list,symbol,new_node);
     }    
@@ -134,7 +135,9 @@ Declaration:
 
 	Expression:
 		REAL{flag_atribuition = 1;}
-		|	IDENTIFIER {check_variable_declaration(yytext); flag_atribuition = 2;}
+		|	IDENTIFIER { flag_atribuition = 2; check_variable_declaration(yytext);
+										if(flag_atribuition == 2)set_utilized_1(list, $1);}
+
 		|	Expression PLUS Expression {flag_atribuition = 2;}
 		|	Expression MINUS Expression {flag_atribuition = 2;}
 		|	Expression DIVIDE Expression {flag_atribuition = 2;}
@@ -148,7 +151,10 @@ Declaration:
 	Atribution:
 		IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
 																if(flag_atribuition == 1)
-																set_initialized_1(list, $1);}
+																set_initialized_1(list, $1);
+																if(flag_atribuition == 2)
+																set_utilized_1(list, $1);}
+															
 		|	Declaration EQUAL Expression {if(flag_atribuition == 1) set_initialized_1(list, params_declaration);}
 
 		;

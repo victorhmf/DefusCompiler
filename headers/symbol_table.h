@@ -6,6 +6,7 @@ struct Node {
 	
 	char symbol [40];
 	int initialized;
+	int utilized;
 	int line_number;
 	node *next;
 
@@ -30,4 +31,7 @@ void destroy_list (node *node);
 void check_initialized_var (node *list);
 
 void set_initialized_1 (node *list, char symbol[40]);
+
+void set_utilized_1 (node *list, char symbol[40]);
+
 
