@@ -14,6 +14,8 @@ extern node *list;
 extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
+int flag_atribuition = 0;
+char *params_declaration;
 
 void beforexit(){
 	check_initialized_var(list);
@@ -110,16 +112,20 @@ Line:
 
 Declaration:
 	 INT IDENTIFIER { add_symbol_to_table(yytext);
-	 									check_lenght_variable(yytext);}
+	 									check_lenght_variable(yytext); 
+	 									params_declaration = $2;}
 	
 	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);}
+											check_lenght_variable(yytext);
+													params_declaration = $2;}
 	
 	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);}
+											check_lenght_variable(yytext);
+													params_declaration = $2;}
 	
 	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);
-										check_lenght_variable(yytext);}
+										check_lenght_variable(yytext);
+												params_declaration = $2;}
 	
 	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);
 																check_lenght_variable(yytext);}
@@ -127,21 +133,23 @@ Declaration:
 	;	
 
 	Expression:
-		REAL
-		|	IDENTIFIER {check_variable_declaration(yytext);}
-		|	Expression PLUS Expression
-		|	Expression MINUS Expression
-		|	Expression DIVIDE Expression
-		|	Expression TIMES Expression
-		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS
-		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
-		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS
-		| MINUS Expression %prec NEG
+		REAL{flag_atribuition = 1;}
+		|	IDENTIFIER {check_variable_declaration(yytext); flag_atribuition = 2;}
+		|	Expression PLUS Expression {flag_atribuition = 2;}
+		|	Expression MINUS Expression {flag_atribuition = 2;}
+		|	Expression DIVIDE Expression {flag_atribuition = 2;}
+		|	Expression TIMES Expression {flag_atribuition = 2;}
+		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+		| MINUS Expression %prec NEG {flag_atribuition = 2;}
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1); set_initialized_1(list, $1);}
-		|	Declaration EQUAL Expression 
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
+																if(flag_atribuition == 1)
+																set_initialized_1(list, $1);}
+		|	Declaration EQUAL Expression {if(flag_atribuition == 1) set_initialized_1(list, params_declaration);}
 
 		;
 
