@@ -14,7 +14,8 @@ extern node *list;
 extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
-int flag_atribuition = 0;
+int flag_atribution = 0;
+int check_expression_first = 0;
 char *params_declaration;
 
 void beforexit(){
@@ -134,28 +135,28 @@ Declaration:
 	;	
 
 	Expression:
-		REAL{flag_atribuition = 1;}
-		|	IDENTIFIER { flag_atribuition = 2; check_variable_declaration(yytext);
-										if(flag_atribuition == 2)set_utilized_1(list, $1);}
+		REAL{flag_atribution = 1;}
+		|	IDENTIFIER { flag_atribution = 2; check_expression_first = 1; check_variable_declaration(yytext);
+										if(flag_atribution == 2)set_utilized_1(list, $1);}
 
-		|	Expression PLUS Expression {flag_atribuition = 2;}
-		|	Expression MINUS Expression {flag_atribuition = 2;}
-		|	Expression DIVIDE Expression {flag_atribuition = 2;}
-		|	Expression TIMES Expression {flag_atribuition = 2;}
-		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		| MINUS Expression %prec NEG {flag_atribuition = 2;}
+		|	Expression PLUS Expression {flag_atribution = 2; check_expression_first = 1;}
+		|	Expression MINUS Expression {flag_atribution = 2; check_expression_first = 1;}
+		|	Expression DIVIDE Expression {flag_atribution = 2; check_expression_first = 1;}
+		|	Expression TIMES Expression {flag_atribution = 2; check_expression_first = 1;}
+		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS {flag_atribution = 2; check_expression_first = 1;}
+		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribution = 2; check_expression_first = 1;}
+		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribution = 2; check_expression_first = 1;}
+		| MINUS Expression %prec NEG {flag_atribution = 2; check_expression_first = 1;}
 		;
 
 	Atribution:
 		IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
-																if(flag_atribuition == 1)
+																if(flag_atribution == 1 && check_expression_first == 0)
 																set_initialized_1(list, $1);
-																if(flag_atribuition == 2)
+																if(flag_atribution == 2)
 																set_utilized_1(list, $1);}
 															
-		|	Declaration EQUAL Expression {if(flag_atribuition == 1) set_initialized_1(list, params_declaration);}
+		|	Declaration EQUAL Expression {if(flag_atribution == 1) set_initialized_1(list, params_declaration);}
 
 		;
 
