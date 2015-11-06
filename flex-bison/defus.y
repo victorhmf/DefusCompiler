@@ -87,7 +87,7 @@ void add_symbol_to_table (char * symbol){
 %token INT FLOAT CHAR DOUBLE
 %token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
-%token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
+%token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET LEFT_BRACE RIGHT_BRACE
 %token QUIT
 
 
@@ -97,8 +97,15 @@ void add_symbol_to_table (char * symbol){
 
 Input:
    /* Empty */
-   | Input Line
-   ;	
+   | Input Content
+	| Function LEFT_BRACE
+   ;
+
+Content:
+	RIGHT_BRACE
+	| LEFT_BRACE Line
+	| Line
+	;
 	
 Line:
 	END
@@ -133,31 +140,35 @@ Declaration:
 
 	;	
 
-	Expression:
-		REAL{flag_atribuition = 1;}
-		|	IDENTIFIER { flag_atribuition = 2; check_variable_declaration(yytext);
-										if(flag_atribuition == 2)set_utilized_1(list, $1);}
+Expression:
+	REAL{flag_atribuition = 1;}
+	|	IDENTIFIER { flag_atribuition = 2; check_variable_declaration(yytext);
+									if(flag_atribuition == 2)set_utilized_1(list, $1);}
 
-		|	Expression PLUS Expression {flag_atribuition = 2;}
-		|	Expression MINUS Expression {flag_atribuition = 2;}
-		|	Expression DIVIDE Expression {flag_atribuition = 2;}
-		|	Expression TIMES Expression {flag_atribuition = 2;}
-		| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
-		| MINUS Expression %prec NEG {flag_atribuition = 2;}
-		;
+	|	Expression PLUS Expression {flag_atribuition = 2;}
+	|	Expression MINUS Expression {flag_atribuition = 2;}
+	|	Expression DIVIDE Expression {flag_atribuition = 2;}
+	|	Expression TIMES Expression {flag_atribuition = 2;}
+	| POW LEFT_PARENTHESIS Expression COMA Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+	| SQRT LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+	|	LEFT_PARENTHESIS Expression RIGHT_PARENTHESIS {flag_atribuition = 2;}
+	| MINUS Expression %prec NEG {flag_atribuition = 2;}
+	;
 
-	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
-																if(flag_atribuition == 1)
-																set_initialized_1(list, $1);
-																if(flag_atribuition == 2)
-																set_utilized_1(list, $1);}
-															
-		|	Declaration EQUAL Expression {if(flag_atribuition == 1) set_initialized_1(list, params_declaration);}
+Function:
+	INT IDENTIFIER LEFT_BRACE RIGHT_BRACE
+    ;
 
-		;
+Atribution:
+	IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
+															if(flag_atribuition == 1)
+															set_initialized_1(list, $1);
+															if(flag_atribuition == 2)
+															set_utilized_1(list, $1);}
+														
+	|	Declaration EQUAL Expression {if(flag_atribuition == 1) set_initialized_1(list, params_declaration);}
+
+	;
 
 
 %%

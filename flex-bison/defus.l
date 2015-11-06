@@ -33,6 +33,8 @@ real {integer}("."{integer})?
 "]" {return (RIGHT_BRACKET) ;}
 "(" return (LEFT_PARENTHESIS);
 ")" return (RIGHT_PARENTHESIS);
+"{" return (LEFT_BRACE);
+"}" return (RIGHT_BRACE);
 
 "+" return (PLUS);
 "=" return (EQUAL);
