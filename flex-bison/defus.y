@@ -103,7 +103,6 @@ Input:
 Stream: 
 	RIGHT_BRACE {printf("hue!\n");}
     | LEFT_BRACE Line
-	| Function 
     | Line 
     ;
 	
@@ -116,6 +115,8 @@ Line:
 	| Atribution COLON {	char msg[100];
 		 										snprintf (msg, 100, "Atribuição encontrada!") ;
 		 										insert_msg(list_msg_sucess, msg, line_number);}
+	| Function
+
 	;
 
 Function:
@@ -124,24 +125,24 @@ Function:
 
 Declaration:
 
-	| INT IDENTIFIER { add_symbol_to_table(yytext);
-	 									check_lenght_variable(yytext); 
+	| INT IDENTIFIER { add_symbol_to_table($2);
+	 									check_lenght_variable($2); 
 	 									params_declaration = $2;}
 	
-	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	| FLOAT IDENTIFIER  { add_symbol_to_table($2);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	| DOUBLE IDENTIFIER  { add_symbol_to_table($2);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);
-										check_lenght_variable(yytext);
+	| CHAR IDENTIFIER  { add_symbol_to_table($2);
+										check_lenght_variable($2);
 												params_declaration = $2;}
 	
-	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);
-																check_lenght_variable(yytext);}
+	| Declaration COMA IDENTIFIER { add_symbol_to_table($3);
+																check_lenght_variable($3);}
 
 	;	
 
