@@ -200,7 +200,8 @@ Declaration:
 		;
 
 		ExpressionDecision:
-		IDENTIFIER Comparator Expression
+		IDENTIFIER Comparator Expression {check_variable_declaration($1);
+																			set_utilized_1(list, $1);}
 		|ExpressionDecision Conector ExpressionDecision
 		;
 
