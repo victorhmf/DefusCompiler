@@ -97,15 +97,15 @@ void add_symbol_to_table (char * symbol){
 
 Input:
    /* Empty */
-   | Input Content
-	| Function LEFT_BRACE
+	| Input Stream
    ;
 
-Content:
-	RIGHT_BRACE
-	| LEFT_BRACE Line
-	| Line
-	;
+Stream: 
+	RIGHT_BRACE {printf("hue!\n");}
+    | LEFT_BRACE Line
+	| Function 
+    | Line 
+    ;
 	
 Line:
 	END
@@ -118,8 +118,13 @@ Line:
 		 										insert_msg(list_msg_sucess, msg, line_number);}
 	;
 
+Function:
+	INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACE {printf("Funcao identificada!\n");}
+	;
+
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table(yytext);
+
+	| INT IDENTIFIER { add_symbol_to_table(yytext);
 	 									check_lenght_variable(yytext); 
 	 									params_declaration = $2;}
 	
@@ -140,6 +145,7 @@ Declaration:
 
 	;	
 
+
 Expression:
 	REAL{flag_atribuition = 1;}
 	|	IDENTIFIER { flag_atribuition = 2; check_variable_declaration(yytext);
@@ -155,9 +161,6 @@ Expression:
 	| MINUS Expression %prec NEG {flag_atribuition = 2;}
 	;
 
-Function:
-	INT IDENTIFIER LEFT_BRACE RIGHT_BRACE
-    ;
 
 Atribution:
 	IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
