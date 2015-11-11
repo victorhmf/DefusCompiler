@@ -14,12 +14,19 @@ extern node *list;
 extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
+
+int key_cont = 0;
 int flag_atribution = 0;
 int check_expression_first = 0;
 char *params_declaration;
 
 void beforexit(){
 	check_initialized_var(list);
+	if(key_cont > 0){
+		char msg [100];
+		snprintf(msg, 100, "Bloco de codigo não finalizado!");
+		insert_msg(list_error, msg, line_number);
+	}
 	generate_log(list_error);
 	print_msg(list_error);
 	
@@ -73,7 +80,8 @@ void add_symbol_to_table (char * symbol){
     else 
     {
 
-    }				
+    }
+
  }
 
 %}
@@ -90,6 +98,8 @@ void add_symbol_to_table (char * symbol){
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 %token QUIT
+%token AND OR DIFFERENT LOWER BIGGER IF
+%token LEFT_KEY RIGHT_KEY
 
 
 %start Input
@@ -98,9 +108,20 @@ void add_symbol_to_table (char * symbol){
 
 Input:
    /* Empty */
-   | Input Line
+   | Input Stream
    ;	
 	
+Stream
+    : RIGHT_KEY {key_cont --; 
+    						if (key_cont < 0){
+    						char msg [100]; 
+    						snprintf(msg, 100 ,"Bloco de Código não inicializado"); 
+    						insert_msg(list_error, msg, line_number);
+    						exit (1);}}
+    | LEFT_KEY Line {key_cont ++;}
+    | Line
+;
+
 Line:
 	END
 	| Declaration COLON { char msg[100];
@@ -110,6 +131,8 @@ Line:
 	| Atribution COLON {	char msg[100];
 		 										snprintf (msg, 100, "Atribuição encontrada!") ;
 		 										insert_msg(list_msg_sucess, msg, line_number);}
+
+	|DECISIONLOOP
 	;
 
 Declaration:
@@ -158,6 +181,30 @@ Declaration:
 															
 		|	Declaration EQUAL Expression {if(flag_atribution == 1) set_initialized_1(list, params_declaration);}
 
+		;
+
+	Comparator:
+		 EQUAL EQUAL
+		| LOWER
+		| BIGGER
+		| LOWER EQUAL
+		| BIGGER EQUAL
+		| DIFFERENT
+
+		;
+	Conector:
+		AND AND
+		| OR OR
+
+		;
+
+		ExpressionDecision:
+		IDENTIFIER Comparator Expression
+		|ExpressionDecision Conector ExpressionDecision
+		;
+
+		DECISIONLOOP:
+		IF LEFT_PARENTHESIS ExpressionDecision RIGHT_PARENTHESIS
 		;
 
 

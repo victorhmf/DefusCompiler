@@ -41,6 +41,14 @@ real {integer}("."{integer})?
 "/" return (DIVIDE);
 "pow" return (POW);
 "sqrt" return (SQRT);
+"&" return (AND);
+"|" return (OR);
+"!=" return (DIFFERENT);
+"if" return (IF);
+">" return (BIGGER);
+"<" return (LOWER);
+"{" return (LEFT_KEY);
+"}" return (RIGHT_KEY);
 
 
 {white} { /* We ignore white characters */ }
