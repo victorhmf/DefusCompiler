@@ -17,6 +17,7 @@ extern char * yytext;
 
 int key_cont = 0;
 int flag_atribution = 0;
+int flag_decision = 0;
 int check_expression_first = 0;
 char *params_declaration;
 
@@ -98,7 +99,7 @@ void add_symbol_to_table (char * symbol){
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 %token QUIT
-%token AND OR DIFFERENT LOWER BIGGER IF
+%token AND OR DIFFERENT LOWER BIGGER IF ELSE
 %token LEFT_KEY RIGHT_KEY
 
 
@@ -204,7 +205,24 @@ Declaration:
 		;
 
 		DECISIONLOOP:
-		IF LEFT_PARENTHESIS ExpressionDecision RIGHT_PARENTHESIS
+		IF LEFT_PARENTHESIS ExpressionDecision RIGHT_PARENTHESIS { flag_decision = 1;}
+		|ELSE {if (flag_decision == 0) {
+					char msg [100];
+					snprintf(msg, 100 , "'Else' without a previous 'if'");
+					insert_msg(list_error, msg, line_number);
+					exit(1);
+					}
+					else{
+						flag_decision = 0;
+					}}
+		|ELSE IF LEFT_PARENTHESIS ExpressionDecision RIGHT_PARENTHESIS 
+					{if (flag_decision == 0) {
+					char msg [100];
+					snprintf(msg, 100 , "'Else' without a previous 'if'");
+					insert_msg(list_error, msg, line_number);
+					exit(1);
+					}}
+
 		;
 
 

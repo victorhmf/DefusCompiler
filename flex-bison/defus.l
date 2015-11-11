@@ -45,6 +45,7 @@ real {integer}("."{integer})?
 "|" return (OR);
 "!=" return (DIFFERENT);
 "if" return (IF);
+"else" return (ELSE);
 ">" return (BIGGER);
 "<" return (LOWER);
 "{" return (LEFT_KEY);
