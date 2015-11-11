@@ -134,27 +134,28 @@ Line:
 		 										insert_msg(list_msg_sucess, msg, line_number);}
 
 	|DECISIONLOOP
+	|Function
 	;
 
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table(yytext);
-	 									check_lenght_variable(yytext); 
+	 INT IDENTIFIER { add_symbol_to_table($2);
+	 									check_lenght_variable($2); 
 	 									params_declaration = $2;}
 	
-	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	| FLOAT IDENTIFIER  { add_symbol_to_table($2);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	| DOUBLE IDENTIFIER  { add_symbol_to_table($2);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);
-										check_lenght_variable(yytext);
+	| CHAR IDENTIFIER  { add_symbol_to_table($2);
+										check_lenght_variable($2);
 												params_declaration = $2;}
 	
-	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);
-																check_lenght_variable(yytext);}
+	| Declaration COMA IDENTIFIER { add_symbol_to_table($3);
+																check_lenght_variable($3);}
 
 	;	
 
@@ -183,6 +184,10 @@ Declaration:
 		|	Declaration EQUAL Expression {if(flag_atribution == 1) set_initialized_1(list, params_declaration);}
 
 		;
+
+	Function:
+	INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS
+	;
 
 	Comparator:
 		 EQUAL EQUAL
