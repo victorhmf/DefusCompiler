@@ -8,6 +8,7 @@ struct Node {
 	int initialized;
 	int utilized;
 	int line_number;
+	char scope [40];
 	node *next;
 
 
@@ -24,7 +25,7 @@ int is_empty(node *list);
 
 void insertSymbol (node *list, char symbol [40], node * new_node);
 
-int findSymbol (node *list, char symbol [40]);
+int findSymbol (node *list, char symbol [40], char scope[40]);
 
 void destroy_list (node *node);
 

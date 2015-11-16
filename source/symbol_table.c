@@ -62,7 +62,7 @@ void insertSymbol (node *list, char symbol [40], node * new_node)
 	}
 }
 
-int findSymbol (node *list, char symbol [40]) {
+int findSymbol (node *list, char symbol [40], char scope[40]) {
 	int search_completed = FALSE;
 
 	if(is_empty(list)){
@@ -76,7 +76,7 @@ int findSymbol (node *list, char symbol [40]) {
 
 	while(node_iterator != NULL){
 
-		if(strcmp(symbol, node_iterator->symbol) == 0){
+		if(strcmp(symbol, node_iterator->symbol) == 0 && strcmp(scope, node_iterator->scope) == 0){
 			search_completed = TRUE;
 
 			char msg [100];
@@ -86,6 +86,7 @@ int findSymbol (node *list, char symbol [40]) {
 			
 			return 1;
 		}
+
 		node_iterator = node_iterator->next;
 
 	}
