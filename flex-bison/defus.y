@@ -15,7 +15,7 @@ extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
 
-char global_scope[40] = "GLOBAL";
+char scope[40] = "GLOBAL";
 int key_cont = 0;
 int flag_atribution = 0;
 int flag_decision = 0;
@@ -64,7 +64,7 @@ void add_symbol_to_table (char * symbol, char *scope){
     	new_node->initialized = 0;
     	new_node->utilized = 0;
     	new_node->line_number = line_number;
-    	strcpy(new_node->scope, global_scope);
+    	strcpy(new_node->scope, scope);
     	insertSymbol(list,symbol,new_node);
     }    
  }
@@ -73,18 +73,17 @@ void add_symbol_to_table (char * symbol, char *scope){
  void check_variable_declaration(char * symbol, char * scope){
 
  		if(!findSymbol(list,symbol, scope)){
-    	char msg[100];
+    	if(!findSymbol(list,symbol,"GLOBAL")) {
+    		
+    		char msg[100];
+    		snprintf(msg, 100, "Variável '%s' não foi declarada", symbol);
+    		insert_msg(list_error , msg, line_number);
 
-    	snprintf(msg, 100, "Variável '%s' não foi declarada", symbol);
-    	insert_msg(list_error , msg, line_number);
+    		exit(1);
 
-    	exit(1);
+    	}
     }
-    else 
-    {
-
-    }
-
+ 
  }
 
 %}
@@ -122,7 +121,7 @@ Stream
     						insert_msg(list_error, msg, line_number);
     						exit (1);}
     						else if(key_cont == 0){
-    							strcpy(global_scope , "GLOBAL");
+    							strcpy(scope , "GLOBAL");
     						}}
     | LEFT_KEY Line {key_cont ++;}
     | Line
@@ -143,31 +142,31 @@ Line:
 	;
 
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table($2, global_scope);
+	 INT IDENTIFIER { add_symbol_to_table($2, scope);
 	 									check_lenght_variable($2); 
 	 									params_declaration = $2;
-	 									printf("GLOBAL SCOPE: %s\n", global_scope);}
+	 									printf("GLOBAL SCOPE: %s\n", scope);}
 	
-	| FLOAT IDENTIFIER  { add_symbol_to_table($2, global_scope);
+	| FLOAT IDENTIFIER  { add_symbol_to_table($2, scope);
 											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| DOUBLE IDENTIFIER  { add_symbol_to_table($2, global_scope);
+	| DOUBLE IDENTIFIER  { add_symbol_to_table($2, scope);
 											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| CHAR IDENTIFIER  { add_symbol_to_table($2, global_scope);
+	| CHAR IDENTIFIER  { add_symbol_to_table($2, scope);
 										check_lenght_variable($2);
 												params_declaration = $2;}
 	
-	| Declaration COMA IDENTIFIER { add_symbol_to_table($3, global_scope);
+	| Declaration COMA IDENTIFIER { add_symbol_to_table($3, scope);
 																check_lenght_variable($3);}
 
 	;	
 
 	Expression:
 		REAL{flag_atribution = 1;}
-		|	IDENTIFIER { flag_atribution = 2; check_expression_first = 1; check_variable_declaration($1, global_scope);
+		|	IDENTIFIER { flag_atribution = 2; check_expression_first = 1; check_variable_declaration($1, scope);
 										if(flag_atribution == 2)set_utilized_1(list, $1);}
 
 		|	Expression PLUS Expression {flag_atribution = 2; check_expression_first = 1;}
@@ -181,7 +180,7 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1, global_scope); 
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1, scope); 
 																if(flag_atribution == 1 && check_expression_first == 0)
 																set_initialized_1(list, $1);
 																if(flag_atribution == 2)
@@ -194,16 +193,16 @@ Declaration:
 
 	Params:
 	
-	INT IDENTIFIER
-	|FLOAT IDENTIFIER 
-	|DOUBLE IDENTIFIER
-	|CHAR IDENTIFIER 
+	INT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
 	|Params COMA Params
 	;
 
 	Function:
-	INT IDENTIFIER LEFT_PARENTHESIS Params RIGHT_PARENTHESIS {strcpy(global_scope , $2);}
-	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(global_scope , $2);}
+	INT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2);} Params RIGHT_PARENTHESIS
+	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2);}
 
 	;
 
@@ -223,7 +222,7 @@ Declaration:
 		;
 
 		ExpressionDecision:
-		IDENTIFIER Comparator Expression {check_variable_declaration($1, global_scope);
+		IDENTIFIER Comparator Expression {check_variable_declaration($1, scope);
 																			set_utilized_1(list, $1);}
 		|ExpressionDecision Conector ExpressionDecision
 		;
