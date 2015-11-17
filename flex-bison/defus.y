@@ -15,6 +15,7 @@ extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
 
+node * list_function;
 char scope[40] = "GLOBAL";
 int key_cont = 0;
 int flag_atribution = 0;
@@ -66,6 +67,24 @@ void add_symbol_to_table (char * symbol, char *scope){
     	new_node->line_number = line_number;
     	strcpy(new_node->scope, scope);
     	insertSymbol(list,symbol,new_node);
+    }    
+ }
+
+ void add_function_to_table (char * symbol, char *scope){
+
+    if(findSymbol(list_function,symbol,scope)){
+    	char msg [100];
+
+    	snprintf(msg, 100, "Função '%s' já declarada", symbol);
+    	insert_msg(list_error, msg, line_number);
+    	exit(1);
+    }				
+    else
+    {
+    	node *new_node = (node*) malloc(sizeof(node));
+    	new_node->line_number = line_number;
+    	strcpy(new_node->scope, scope);
+    	insertSymbol(list_function,symbol,new_node);
     }    
  }
 
@@ -201,8 +220,8 @@ Declaration:
 	;
 
 	Function:
-	INT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2);} Params RIGHT_PARENTHESIS
-	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2);}
+	INT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
+	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
 
 	;
 
@@ -280,6 +299,7 @@ void createOutput(FILE * in_file){
 int main(int argc, char *argv[]){
 	
 	list = createList(list);
+	list_function = createList(list_function);
 	list_error = create_list_msg(list_error);
 	list_msg_sucess = create_list_msg(list_msg_sucess);
 	atexit(beforexit);

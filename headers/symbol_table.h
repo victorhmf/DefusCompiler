@@ -9,6 +9,7 @@ struct Node {
 	int utilized;
 	int line_number;
 	char scope [40];
+	int num_params;
 	node *next;
 
 
