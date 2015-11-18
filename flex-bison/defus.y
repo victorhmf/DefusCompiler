@@ -114,7 +114,7 @@ void add_symbol_to_table (char * symbol, char *scope){
 
 %token END COLON COMA EQUAL
 %token <symbol> IDENTIFIER
-%token INT FLOAT CHAR DOUBLE
+%token INT FLOAT CHAR DOUBLE VOID RETURN
 %token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
@@ -222,6 +222,15 @@ Declaration:
 	Function:
 	INT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
 	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+	| CHAR IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
+	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+	| VOID IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
+	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+
 
 	;
 

@@ -25,6 +25,8 @@ real {integer}("."{integer})?
 "float" {return (FLOAT) ;} 
 "char" {return (CHAR) ; }
 "double" {return (DOUBLE);}
+"void" {return (VOID);}
+"return" {return (RETURN);}
 
 ";" {return (COLON) ; }
 "," {return (COMA) ;}
