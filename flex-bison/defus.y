@@ -105,6 +105,20 @@ void add_symbol_to_table (char * symbol, char *scope){
  
  }
 
+
+ void check_function_declaration(char * function, char * scope){
+
+ 		if(!findSymbol(list_function,function, scope)){
+    		
+    		char msg[100];
+    		snprintf(msg, 100, "Função '%s' não foi declarada", function);
+    		insert_msg(list_error , msg, line_number);
+
+    		exit(1);
+
+    	}
+ }
+
 %}
 
 %union {
@@ -159,6 +173,7 @@ Line:
 	|DECISIONLOOP
 	|Function
 	|Return COLON
+	|FunctionCall COLON
 	;
 
 Declaration:
@@ -221,16 +236,40 @@ Declaration:
 	;
 
 	Function:
-	INT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
-	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
-	| FLOAT IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
-	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
-	| DOUBLE IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
-	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
-	| CHAR IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
-	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
-	| VOID IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
-	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
+	INT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+	 | INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);  printf("Eu estou aqui!\n ");}
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+	| CHAR IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+	| VOID IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+
+	FunctionParams:
+	IDENTIFIER {check_variable_declaration($1, scope);}
+	|REAL
+	|FunctionParams COMA FunctionParams
+	;
+
+	FunctionCall:
+	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, scope); 
+																								if(strcmp(scope, "GLOBAL") == 0){
+																									char msg[100];
+																									snprintf(msg, 100, "Chamada de função no escopo global");
+																									insert_msg(list_error , msg, line_number);
+																									exit (1);
+																								}}
+	|IDENTIFIER LEFT_PARENTHESIS FunctionParams RIGHT_PARENTHESIS {check_function_declaration($1, scope); 
+																								if(strcmp(scope, "GLOBAL") == 0){
+																									char msg[100];
+																									snprintf(msg, 100, "Chamada de função no escopo global");
+																									insert_msg(list_error , msg, line_number);
+																									exit (1);
+																								}}
+
+	;
 
 	Return:
 	RETURN IDENTIFIER{check_variable_declaration($2, scope);}
