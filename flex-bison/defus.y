@@ -158,6 +158,7 @@ Line:
 
 	|DECISIONLOOP
 	|Function
+	|Return COLON
 	;
 
 Declaration:
@@ -231,6 +232,9 @@ Declaration:
 	| VOID IDENTIFIER LEFT_PARENTHESIS {strcpy(scope , $2); add_function_to_table($2, scope);} Params RIGHT_PARENTHESIS
 	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{strcpy(scope , $2); add_function_to_table($2, scope);}
 
+	Return:
+	RETURN IDENTIFIER{check_variable_declaration($2, scope);}
+	|RETURN REAL
 
 	;
 
