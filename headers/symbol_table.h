@@ -36,4 +36,7 @@ void set_initialized_1 (node *list, char symbol[40]);
 
 void set_utilized_1 (node *list, char symbol[40]);
 
+void set_num_params_function(node *list, char symbol[40], int num_params);
+
+void check_num_params_function(node *list, char symbol[40], int num_params, int line_number);
 

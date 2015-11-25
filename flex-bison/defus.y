@@ -18,6 +18,7 @@ extern char * yytext;
 node * list_function;
 char scope[40] = "GLOBAL";
 int key_cont = 0;
+int num_params_function = 0;
 int flag_atribution = 0;
 int flag_decision = 0;
 int check_expression_first = 0;
@@ -180,7 +181,8 @@ Line:
 Declaration:
 	 INT IDENTIFIER { add_symbol_to_table($2, scope);
 	 									check_lenght_variable($2); 
-	 									params_declaration = $2;}	
+	 									params_declaration = $2;
+	 									}	
 																						
 	| FLOAT IDENTIFIER  { add_symbol_to_table($2, scope);
 											check_lenght_variable($2);
@@ -228,33 +230,59 @@ Declaration:
 
 	Params:
 	
-	INT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
-	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
-	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
-	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
-	|Params COMA Params {}
+	INT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+									 set_initialized_1(list, $2); set_utilized_1(list, $2);
+										num_params_function ++;}
+	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|Params COMA Params
 	;
 
 	Function:
 	INT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	 | INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);}
+													{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
 	| FLOAT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+															{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+										set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
 	| DOUBLE IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+															{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);
+										set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+
 	| CHAR IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+														{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+
+	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
 	| VOID IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
+														{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
 
 	FunctionParams:
-	IDENTIFIER {check_variable_declaration($1, scope);}
-	|REAL
+	IDENTIFIER {check_variable_declaration($1, scope); num_params_function ++;}
+	|REAL {num_params_function ++;}
 	|FunctionParams COMA FunctionParams
 	;
 
 	FunctionCall:
-	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL"); 
+	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL");
+																									check_num_params_function(list_function, $1, num_params_function, line_number);
+																									num_params_function = 0;
 																								if(strcmp(scope, "GLOBAL") == 0){
 																									char msg[100];
 																									snprintf(msg, 100, "Chamada de função no escopo global");
@@ -262,6 +290,8 @@ Declaration:
 																									exit (1);
 																								}}
 	|IDENTIFIER LEFT_PARENTHESIS FunctionParams RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL"); 
+																									check_num_params_function(list_function, $1, num_params_function, line_number);
+																									num_params_function = 0;
 																								if(strcmp(scope, "GLOBAL") == 0){
 																									char msg[100];
 																									snprintf(msg, 100, "Chamada de função no escopo global");
