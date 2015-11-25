@@ -72,7 +72,7 @@ void add_symbol_to_table (char * symbol, char *scope){
 
  void add_function_to_table (char * symbol, char *scope){
 
-    if(findSymbol(list_function,symbol,scope)){
+    if(findSymbol(list_function,symbol,"GLOBAL")){
     	char msg [100];
 
     	snprintf(msg, 100, "Função '%s' já declarada", symbol);
@@ -108,7 +108,7 @@ void add_symbol_to_table (char * symbol, char *scope){
 
  void check_function_declaration(char * function, char * scope){
 
- 		if(!findSymbol(list_function,function, scope)){
+ 		if(!findSymbol(list_function,function, "GLOBAL")){
     		
     		char msg[100];
     		snprintf(msg, 100, "Função '%s' não foi declarada", function);
@@ -135,7 +135,7 @@ void add_symbol_to_table (char * symbol, char *scope){
 %token QUIT
 %token AND OR DIFFERENT LOWER BIGGER IF ELSE
 %token LEFT_KEY RIGHT_KEY
-
+%token INCLUDES
 
 %start Input
 
@@ -158,6 +158,7 @@ Stream
     						}}
     | LEFT_KEY Line {key_cont ++;}
     | Line
+    | INCLUDES
 ;
 
 Line:
@@ -179,9 +180,8 @@ Line:
 Declaration:
 	 INT IDENTIFIER { add_symbol_to_table($2, scope);
 	 									check_lenght_variable($2); 
-	 									params_declaration = $2;
-	 									printf("GLOBAL SCOPE: %s\n", scope);}
-	
+	 									params_declaration = $2;}	
+																						
 	| FLOAT IDENTIFIER  { add_symbol_to_table($2, scope);
 											check_lenght_variable($2);
 													params_declaration = $2;}
@@ -232,12 +232,12 @@ Declaration:
 	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
 	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
 	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2); set_initialized_1(list, $2); set_utilized_1(list, $2);}
-	|Params COMA Params
+	|Params COMA Params {}
 	;
 
 	Function:
 	INT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
-	 | INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);  printf("Eu estou aqui!\n ");}
+	 | INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);}
 	| FLOAT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
 	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); }
 	| DOUBLE IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
@@ -254,14 +254,14 @@ Declaration:
 	;
 
 	FunctionCall:
-	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, scope); 
+	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL"); 
 																								if(strcmp(scope, "GLOBAL") == 0){
 																									char msg[100];
 																									snprintf(msg, 100, "Chamada de função no escopo global");
 																									insert_msg(list_error , msg, line_number);
 																									exit (1);
 																								}}
-	|IDENTIFIER LEFT_PARENTHESIS FunctionParams RIGHT_PARENTHESIS {check_function_declaration($1, scope); 
+	|IDENTIFIER LEFT_PARENTHESIS FunctionParams RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL"); 
 																								if(strcmp(scope, "GLOBAL") == 0){
 																									char msg[100];
 																									snprintf(msg, 100, "Chamada de função no escopo global");

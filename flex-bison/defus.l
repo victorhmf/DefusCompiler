@@ -16,6 +16,8 @@ digit [0-9]
 integer {digit}+
 string  [a-z][a-z0-9]*
 real {integer}("."{integer})?
+
+includes .*#include.*
 %%
 
 "//"	{ SingleLineComment(); }
@@ -53,7 +55,7 @@ real {integer}("."{integer})?
 "{" return (LEFT_KEY);
 "}" return (RIGHT_KEY);
 
-
+{includes} {return(INCLUDES); }
 {white} { /* We ignore white characters */ }
 {string} {yylval.symbol = strdup(yytext);return IDENTIFIER ;}
 {real} {yylval.val = atof(yytext); return(REAL); }
