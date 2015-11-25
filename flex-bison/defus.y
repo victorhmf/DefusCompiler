@@ -15,7 +15,10 @@ extern line *list_error;
 extern line *list_msg_sucess;
 extern char * yytext;
 
+node * list_function;
+char scope[40] = "GLOBAL";
 int key_cont = 0;
+int num_params_function = 0;
 int flag_atribution = 0;
 int flag_decision = 0;
 int check_expression_first = 0;
@@ -48,9 +51,9 @@ void check_lenght_variable(char * symbol){
 	}
 }
 
-void add_symbol_to_table (char * symbol){
+void add_symbol_to_table (char * symbol, char *scope){
 
-    if(findSymbol(list,symbol)){
+    if(findSymbol(list,symbol,scope)){
     	char msg [100];
 
     	snprintf(msg, 100, "Variável '%s' já declarada", symbol);
@@ -63,26 +66,58 @@ void add_symbol_to_table (char * symbol){
     	new_node->initialized = 0;
     	new_node->utilized = 0;
     	new_node->line_number = line_number;
+    	strcpy(new_node->scope, scope);
     	insertSymbol(list,symbol,new_node);
     }    
  }
 
+ void add_function_to_table (char * symbol, char *scope){
 
- void check_variable_declaration(char * symbol){
+    if(findSymbol(list_function,symbol,"GLOBAL")){
+    	char msg [100];
 
- 		if(!findSymbol(list,symbol)){
-    	char msg[100];
-
-    	snprintf(msg, 100, "Variável '%s' não foi declarada", symbol);
-    	insert_msg(list_error , msg, line_number);
-
+    	snprintf(msg, 100, "Função '%s' já declarada", symbol);
+    	insert_msg(list_error, msg, line_number);
     	exit(1);
-    }
-    else 
+    }				
+    else
     {
+    	node *new_node = (node*) malloc(sizeof(node));
+    	new_node->line_number = line_number;
+    	strcpy(new_node->scope, scope);
+    	insertSymbol(list_function,symbol,new_node);
+    }    
+ }
 
+
+ void check_variable_declaration(char * symbol, char * scope){
+
+ 		if(!findSymbol(list,symbol, scope)){
+    	if(!findSymbol(list,symbol,"GLOBAL")) {
+    		
+    		char msg[100];
+    		snprintf(msg, 100, "Variável '%s' não foi declarada", symbol);
+    		insert_msg(list_error , msg, line_number);
+
+    		exit(1);
+
+    	}
     }
+ 
+ }
 
+
+ void check_function_declaration(char * function, char * scope){
+
+ 		if(!findSymbol(list_function,function, "GLOBAL")){
+    		
+    		char msg[100];
+    		snprintf(msg, 100, "Função '%s' não foi declarada", function);
+    		insert_msg(list_error , msg, line_number);
+
+    		exit(1);
+
+    	}
  }
 
 %}
@@ -94,14 +129,14 @@ void add_symbol_to_table (char * symbol){
 
 %token END COLON COMA EQUAL
 %token <symbol> IDENTIFIER
-%token INT FLOAT CHAR DOUBLE
+%token INT FLOAT CHAR DOUBLE VOID RETURN
 %token <val> REAL
 %token PLUS MINUS TIMES DIVIDE POW SQRT NEG
 %token LEFT_PARENTHESIS RIGHT_PARENTHESIS LEFT_BRACKET RIGHT_BRACKET
 %token QUIT
 %token AND OR DIFFERENT LOWER BIGGER IF ELSE
 %token LEFT_KEY RIGHT_KEY
-
+%token INCLUDES
 
 %start Input
 
@@ -118,9 +153,13 @@ Stream
     						char msg [100]; 
     						snprintf(msg, 100 ,"Bloco de Código não inicializado"); 
     						insert_msg(list_error, msg, line_number);
-    						exit (1);}}
+    						exit (1);}
+    						else if(key_cont == 0){
+    							strcpy(scope , "GLOBAL");
+    						}}
     | LEFT_KEY Line {key_cont ++;}
     | Line
+    | INCLUDES
 ;
 
 Line:
@@ -134,33 +173,37 @@ Line:
 		 										insert_msg(list_msg_sucess, msg, line_number);}
 
 	|DECISIONLOOP
+	|Function
+	|Return COLON
+	|FunctionCall COLON
 	;
 
 Declaration:
-	 INT IDENTIFIER { add_symbol_to_table(yytext);
-	 									check_lenght_variable(yytext); 
-	 									params_declaration = $2;}
-	
-	| FLOAT IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	 INT IDENTIFIER { add_symbol_to_table($2, scope);
+	 									check_lenght_variable($2); 
+	 									params_declaration = $2;
+	 									}	
+																						
+	| FLOAT IDENTIFIER  { add_symbol_to_table($2, scope);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| DOUBLE IDENTIFIER  { add_symbol_to_table(yytext);
-											check_lenght_variable(yytext);
+	| DOUBLE IDENTIFIER  { add_symbol_to_table($2, scope);
+											check_lenght_variable($2);
 													params_declaration = $2;}
 	
-	| CHAR IDENTIFIER  { add_symbol_to_table(yytext);
-										check_lenght_variable(yytext);
+	| CHAR IDENTIFIER  { add_symbol_to_table($2, scope);
+										check_lenght_variable($2);
 												params_declaration = $2;}
 	
-	| Declaration COMA IDENTIFIER { add_symbol_to_table(yytext);
-																check_lenght_variable(yytext);}
+	| Declaration COMA IDENTIFIER { add_symbol_to_table($3, scope);
+																check_lenght_variable($3);}
 
 	;	
 
 	Expression:
 		REAL{flag_atribution = 1;}
-		|	IDENTIFIER { flag_atribution = 2; check_expression_first = 1; check_variable_declaration(yytext);
+		|	IDENTIFIER { flag_atribution = 2; check_expression_first = 1; check_variable_declaration($1, scope);
 										if(flag_atribution == 2)set_utilized_1(list, $1);}
 
 		|	Expression PLUS Expression {flag_atribution = 2; check_expression_first = 1;}
@@ -174,7 +217,7 @@ Declaration:
 		;
 
 	Atribution:
-		IDENTIFIER EQUAL Expression {check_variable_declaration($1); 
+		IDENTIFIER EQUAL Expression {check_variable_declaration($1, scope); 
 																if(flag_atribution == 1 && check_expression_first == 0)
 																set_initialized_1(list, $1);
 																if(flag_atribution == 2)
@@ -183,6 +226,86 @@ Declaration:
 		|	Declaration EQUAL Expression {if(flag_atribution == 1) set_initialized_1(list, params_declaration);}
 
 		;
+
+
+	Params:
+	
+	INT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+									 set_initialized_1(list, $2); set_utilized_1(list, $2);
+										num_params_function ++;}
+	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+	|Params COMA Params
+	;
+
+	Function:
+	INT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+													{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| INT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+															{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| FLOAT IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+										set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+															{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| DOUBLE IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2);
+										set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+
+	| CHAR IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+														{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+
+	| CHAR IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| VOID IDENTIFIER LEFT_PARENTHESIS { add_function_to_table($2, scope); strcpy(scope , $2); } Params RIGHT_PARENTHESIS
+														{set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+	
+	| VOID IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS{ add_function_to_table($2, scope); strcpy(scope , $2); 
+									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
+
+	FunctionParams:
+	IDENTIFIER {check_variable_declaration($1, scope); num_params_function ++;}
+	|REAL {num_params_function ++;}
+	|FunctionParams COMA FunctionParams
+	;
+
+	FunctionCall:
+	IDENTIFIER LEFT_PARENTHESIS RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL");
+																									check_num_params_function(list_function, $1, num_params_function, line_number);
+																									num_params_function = 0;
+																								if(strcmp(scope, "GLOBAL") == 0){
+																									char msg[100];
+																									snprintf(msg, 100, "Chamada de função no escopo global");
+																									insert_msg(list_error , msg, line_number);
+																									exit (1);
+																								}}
+	|IDENTIFIER LEFT_PARENTHESIS FunctionParams RIGHT_PARENTHESIS {check_function_declaration($1, "GLOBAL"); 
+																									check_num_params_function(list_function, $1, num_params_function, line_number);
+																									num_params_function = 0;
+																								if(strcmp(scope, "GLOBAL") == 0){
+																									char msg[100];
+																									snprintf(msg, 100, "Chamada de função no escopo global");
+																									insert_msg(list_error , msg, line_number);
+																									exit (1);
+																								}}
+
+	;
+
+	Return:
+	RETURN IDENTIFIER{check_variable_declaration($2, scope);}
+	|RETURN REAL
+
+	;
 
 	Comparator:
 		 EQUAL EQUAL
@@ -200,7 +323,7 @@ Declaration:
 		;
 
 		ExpressionDecision:
-		IDENTIFIER Comparator Expression {check_variable_declaration($1);
+		IDENTIFIER Comparator Expression {check_variable_declaration($1, scope);
 																			set_utilized_1(list, $1);}
 		|ExpressionDecision Conector ExpressionDecision
 		;
@@ -258,6 +381,7 @@ void createOutput(FILE * in_file){
 int main(int argc, char *argv[]){
 	
 	list = createList(list);
+	list_function = createList(list_function);
 	list_error = create_list_msg(list_error);
 	list_msg_sucess = create_list_msg(list_msg_sucess);
 	atexit(beforexit);

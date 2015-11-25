@@ -62,7 +62,7 @@ void insertSymbol (node *list, char symbol [40], node * new_node)
 	}
 }
 
-int findSymbol (node *list, char symbol [40]) {
+int findSymbol (node *list, char symbol [40], char scope[40]) {
 	int search_completed = FALSE;
 
 	if(is_empty(list)){
@@ -76,7 +76,7 @@ int findSymbol (node *list, char symbol [40]) {
 
 	while(node_iterator != NULL){
 
-		if(strcmp(symbol, node_iterator->symbol) == 0){
+		if(strcmp(symbol, node_iterator->symbol) == 0 && strcmp(scope, node_iterator->scope) == 0){
 			search_completed = TRUE;
 
 			char msg [100];
@@ -86,6 +86,7 @@ int findSymbol (node *list, char symbol [40]) {
 			
 			return 1;
 		}
+
 		node_iterator = node_iterator->next;
 
 	}
@@ -197,4 +198,66 @@ void set_utilized_1 (node *list, char symbol[40]){
 		}
 
 	}
+}
+
+void set_num_params_function(node *list, char symbol[40], int num_params){
+
+	if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else{
+		node_iterator = list->next;
+
+		while(node_iterator != NULL){
+
+			if(strcmp(symbol, node_iterator->symbol) == 0){
+
+				char msg [100];
+				snprintf(msg, 100, "Simbolo %s encontrado ", node_iterator->symbol);
+			
+				insert_msg(list_msg_sucess, msg ,0);
+
+				node_iterator->num_params = num_params;
+			}
+			node_iterator = node_iterator->next;
+		}
+
+	}
+}
+
+
+void check_num_params_function(node *list, char symbol[40], int num_params, int line_number){
+		
+		if(is_empty(list)){
+		char msg[100];
+		snprintf(msg, 100 , "Lista Vazia");
+		insert_msg(list_msg_sucess, msg, 0	);
+	}
+	else{
+		node_iterator = list->next;
+
+		while(node_iterator != NULL){
+
+			if(strcmp(symbol, node_iterator->symbol) == 0){
+
+				char msg [100];
+				snprintf(msg, 100, "Simbolo %s encontrado ", node_iterator->symbol);
+			
+				insert_msg(list_msg_sucess, msg ,0);
+
+				if(num_params != node_iterator->num_params){
+					char msg[100];
+					snprintf(msg, 100, "Número de parametros inválidos");
+					insert_msg(list_error, msg, line_number);
+					exit(1);
+				}
+			}
+			node_iterator = node_iterator->next;
+		}
+
+	}
+
+
 }
