@@ -218,12 +218,27 @@ Declaration:
 
 	Atribution:
 		IDENTIFIER EQUAL Expression {check_variable_declaration($1, scope); 
+				 												check_lenght_variable($1); 
 																if(flag_atribution == 1 && check_expression_first == 0)
 																set_initialized_1(list, $1);
 																if(flag_atribution == 2)
 																set_utilized_1(list, $1);}
 															
-		|	Declaration EQUAL Expression {if(flag_atribution == 1) set_initialized_1(list, params_declaration);}
+		|	Declaration EQUAL Expression { 
+																		if(flag_atribution == 1)
+																		 set_initialized_1(list, params_declaration);}
+
+		| IDENTIFIER EQUAL FunctionCall {check_variable_declaration($1, scope);
+																		check_lenght_variable($1);
+																		if(flag_atribution == 1 && check_expression_first == 0)
+																		set_initialized_1(list, $1);
+																		set_utilized_1(list, $1);}
+
+		| Declaration EQUAL FunctionCall {
+																			if(flag_atribution == 1 && check_expression_first == 0)
+																			set_initialized_1(list, params_declaration);
+																			set_utilized_1(list, params_declaration);}
+
 
 		;
 
