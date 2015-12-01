@@ -1,26 +1,31 @@
 # DefusCompiler
 
-## escopo
+Defus é um compilador da linguagem C que identifica algumas más técnicas de programação. Abaixo está descrito qual o escopo abordado, tanto nas técnicas, como na linguagem C.
+
+## Escopo
 Técnicas abordadas:
-- Comentários
-- Inicialização de Variáveis
+
+- Ausência de Comentários no código
+- Variáveis não inicializadas
 - Variáveis não utilizadas
 - Nomes significativos de variáveis
-- Indentação
 
-Escopo linguagem C:
+linguagem C:
+
 - Atribuições
 - Operações
 - Bibliotecas
 - If/Else
-- For
 - Funções
 
-## Erros abordados
+## Compilando
 
-| Erro 	| Tipo 		| Message 								|
-|:----:	|:----:		| ----------------------------			|
-|E01   	| Identação	| Wrong identent. Tab missing.      	|
-|E02    | Espaços	| Space missing.        				|
-|E03    | Comentário| Comment missing.        				|
-|	    |      		|         								|
+Para utilizar o compilador, execute os comandos:
+
+make clean
+
+make
+
+./defus nomeDoSeuarquivo.c
+
+#
