@@ -83,7 +83,7 @@ void add_symbol_to_table (char * symbol, char *scope){
     else
     {
     	node *new_node = (node*) malloc(sizeof(node));
-    	new_node->line_number = line_number;
+    	new_node->line_number = line_number + 2;
     	strcpy(new_node->scope, scope);
     	insertSymbol(list_function,symbol,new_node);
     }    
@@ -249,11 +249,14 @@ Declaration:
 									 set_initialized_1(list, $2); set_utilized_1(list, $2);
 										num_params_function ++;}
 	|FLOAT IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
-										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);
+										num_params_function ++;}
 	|DOUBLE IDENTIFIER{add_symbol_to_table($2, scope); check_lenght_variable($2);
-										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);
+										num_params_function ++;}
 	|CHAR IDENTIFIER {add_symbol_to_table($2, scope); check_lenght_variable($2);
-										 set_initialized_1(list, $2); set_utilized_1(list, $2);}
+										 set_initialized_1(list, $2); set_utilized_1(list, $2);
+										num_params_function ++;}
 	|Params COMA Params
 	;
 
@@ -289,7 +292,7 @@ Declaration:
 									set_num_params_function(list_function, $2, num_params_function); num_params_function = 0;}
 
 	FunctionParams:
-	IDENTIFIER {check_variable_declaration($1, scope); num_params_function ++;}
+	IDENTIFIER {check_variable_declaration($1, scope); set_utilized_1(list, $1); num_params_function ++;}
 	|REAL {num_params_function ++;}
 	|FunctionParams COMA FunctionParams
 	;

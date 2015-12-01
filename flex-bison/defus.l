@@ -14,7 +14,7 @@ int line_number = 1;
 white [ \t\r]+
 digit [0-9]
 integer {digit}+
-string  [a-z][a-z0-9]*
+string  [_a-z][_a-z0-9]*
 real {integer}("."{integer})?
 
 includes .*#include.*
@@ -32,7 +32,7 @@ includes .*#include.*
 
 ";" {return (COLON) ; }
 "," {return (COMA) ;}
-"\n" { ++line_number ; return (END) ;}
+"\n" { line_number++ ; return (END) ;}
 "[" {return (LEFT_BRACKET) ;}
 "]" {return (RIGHT_BRACKET) ;}
 "(" return (LEFT_PARENTHESIS);
@@ -77,6 +77,7 @@ MultiLineComment(){
 		if (c != 0){
 			num_comments++;
 			char msg[100];
+			line_number ++;
 			snprintf (msg, 100, "ml comment") ;
 			insert_msg(list_msg_sucess, msg, line_number);
 	}		
@@ -91,6 +92,7 @@ SingleLineComment(){
 		char msg[100];
 		snprintf (msg, 100, "sl comment") ;
 
+		line_number ++;
 		insert_msg(list_msg_sucess, msg, line_number);
 
 	

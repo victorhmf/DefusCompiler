@@ -250,7 +250,7 @@ void check_num_params_function(node *list, char symbol[40], int num_params, int 
 				if(num_params != node_iterator->num_params){
 					char msg[100];
 					snprintf(msg, 100, "Número de parametros inválidos");
-					insert_msg(list_error, msg, line_number);
+					insert_msg(list_error, msg, line_number	);
 					exit(1);
 				}
 			}
